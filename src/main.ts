@@ -4,16 +4,26 @@ import { ConfigService } from '@nestjs/config';
 import * as session from 'express-session';
 import { Pool } from 'pg';
 import * as connectPgSimple from 'connect-pg-simple';
-import { ClassSerializerInterceptor } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+    }),
+  );
+
   const configService = app.get(ConfigService);
 
   const PORT = configService.get<number>('PORT') || 3700;
+  const isProd = process.env.NODE_ENV === 'production';
 
   const TTL = 1000 * 60 * 60 * 24;
 
@@ -41,13 +51,17 @@ async function bootstrap() {
       store: sessionStore,
       cookie: {
         maxAge: TTL,
-        httpOnly: process.env.NODE_ENV === 'production',
+        httpOnly: true,
         sameSite: 'lax',
+        secure: isProd,
       },
     }),
   );
 
-  app.enableCors();
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
 
   await app.listen(PORT);
 }
