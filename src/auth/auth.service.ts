@@ -33,6 +33,8 @@ export class AuthService {
 
     await this.userRepository.update(user.id, { lastLogin });
 
+    Reflect.deleteProperty(user, 'password');
+
     return { ...user, lastLogin };
   }
 
@@ -55,6 +57,8 @@ export class AuthService {
     if (!user) {
       throw new InternalServerErrorException('User not created');
     }
+
+    Reflect.deleteProperty(user, 'password');
 
     return user;
   }

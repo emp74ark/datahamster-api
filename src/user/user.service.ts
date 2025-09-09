@@ -38,11 +38,15 @@ export class UserService {
       throw new InternalServerErrorException('User not created');
     }
 
+    Reflect.deleteProperty(created, 'password');
+
     return this.userRepository.findOneBy({ id: created.id });
   }
 
   findAll() {
-    return this.userRepository.find();
+    return this.userRepository.find({
+      select: ['id', 'username', 'email', 'role'],
+    });
   }
 
   async findOne({
@@ -61,6 +65,8 @@ export class UserService {
     if (role === UserRole.USER && id !== userId) {
       throw new UnauthorizedException('Unauthorized');
     }
+
+    Reflect.deleteProperty(user, 'password');
     return user;
   }
 
@@ -88,7 +94,12 @@ export class UserService {
       payload.password = await argon.hash(dto.password);
     }
     await this.userRepository.update(id, payload);
-    return this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new InternalServerErrorException('User update failedL');
+    }
+    Reflect.deleteProperty(user, 'password');
+    return user;
   }
 
   async remove({
