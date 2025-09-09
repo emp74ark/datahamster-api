@@ -45,12 +45,20 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  async findOne({ id, userId }: { id: number; userId: number }) {
+  async findOne({
+    id,
+    userId,
+    role,
+  }: {
+    id: number;
+    userId: number;
+    role: UserRole;
+  }) {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) {
       throw new BadRequestException('User not found');
     }
-    if (user?.role === UserRole.USER && id !== userId) {
+    if (role === UserRole.USER && id !== userId) {
       throw new UnauthorizedException('Unauthorized');
     }
     return user;
@@ -60,19 +68,22 @@ export class UserService {
     id,
     dto,
     userId,
+    role,
   }: {
     id: number;
     dto: UpdateUserDto;
     userId: number;
+    role: UserRole;
   }) {
     const existing = await this.userRepository.findOneBy({ id });
     if (!existing) {
       throw new BadRequestException('User not found');
     }
-    if ((existing?.role === UserRole.USER && id) !== userId) {
+    if (role === UserRole.USER && id !== userId) {
       throw new UnauthorizedException('Unauthorized');
     }
     const payload: Partial<User> = { ...dto };
+    Reflect.deleteProperty(payload, 'role');
     if (dto.password) {
       payload.password = await argon.hash(dto.password);
     }
@@ -80,12 +91,20 @@ export class UserService {
     return this.userRepository.findOneBy({ id });
   }
 
-  async remove({ id, userId }: { id: number; userId: number }) {
+  async remove({
+    id,
+    userId,
+    role,
+  }: {
+    id: number;
+    userId: number;
+    role: UserRole;
+  }) {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) {
       throw new BadRequestException('User not found');
     }
-    if ((user?.role === UserRole.USER && id) !== userId) {
+    if (role === UserRole.USER && id !== userId) {
       throw new UnauthorizedException('Unauthorized');
     }
     return this.userRepository.delete(id);

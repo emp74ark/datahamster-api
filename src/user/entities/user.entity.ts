@@ -16,8 +16,7 @@ export class User {
   @Column({ length: 50, nullable: false, unique: true })
   username: string;
 
-  @Exclude({ toPlainOnly: true })
-  @Column({ length: 500, nullable: false, select: false })
+  @Column({ length: 500, nullable: false })
   password: string;
 
   @Column({
