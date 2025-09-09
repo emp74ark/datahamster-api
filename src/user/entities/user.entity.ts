@@ -14,7 +14,7 @@ export class User {
   id: number;
 
   @Column({ length: 50, nullable: false, unique: true })
-  login: string;
+  username: string;
 
   @Exclude({ toPlainOnly: true })
   @Column({ length: 500, nullable: false, select: false })
@@ -28,9 +28,15 @@ export class User {
   })
   role: UserRole;
 
+  @Column({ length: 150, nullable: false })
+  email: string;
+
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp with time zone' })
   updatedAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp with time zone' })
+  lastLogin: Date;
 }

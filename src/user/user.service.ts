@@ -16,11 +16,11 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-  async create(createUserDto: CreateUserDto) {
-    const hash = await argon.hash(createUserDto.password);
+  async create({ dto }: { dto: CreateUserDto }) {
+    const hash = await argon.hash(dto.password);
 
     const existingUser = await this.userRepository.findOneBy({
-      login: createUserDto.login,
+      username: dto.username,
     });
 
     if (existingUser) {
@@ -28,7 +28,7 @@ export class UserService {
     }
 
     const created = await this.userRepository.save({
-      ...createUserDto,
+      ...dto,
       password: hash,
     });
 
@@ -43,20 +43,20 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  findOne(id: number) {
+  findOne({ id }: { id: number }) {
     return this.userRepository.findOneBy({ id });
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    const payload: Partial<User> = { ...updateUserDto };
-    if (updateUserDto.password) {
-      payload.password = await argon.hash(updateUserDto.password);
+  async update({ id, dto }: { id: number; dto: UpdateUserDto }) {
+    const payload: Partial<User> = { ...dto };
+    if (dto.password) {
+      payload.password = await argon.hash(dto.password);
     }
     await this.userRepository.update(id, payload);
     return this.userRepository.findOneBy({ id });
   }
 
-  remove(id: number) {
+  remove({ id }: { id: number }) {
     return this.userRepository.delete(id);
   }
 }
