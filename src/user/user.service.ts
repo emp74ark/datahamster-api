@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -9,6 +10,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as argon from 'argon2';
+import { UserRole } from './entities/user.enums';
 
 @Injectable()
 export class UserService {
@@ -43,11 +45,33 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  findOne({ id }: { id: number }) {
-    return this.userRepository.findOneBy({ id });
+  async findOne({ id, userId }: { id: number; userId: number }) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    if (user?.role === UserRole.USER && id !== userId) {
+      throw new UnauthorizedException('Unauthorized');
+    }
+    return user;
   }
 
-  async update({ id, dto }: { id: number; dto: UpdateUserDto }) {
+  async update({
+    id,
+    dto,
+    userId,
+  }: {
+    id: number;
+    dto: UpdateUserDto;
+    userId: number;
+  }) {
+    const existing = await this.userRepository.findOneBy({ id });
+    if (!existing) {
+      throw new BadRequestException('User not found');
+    }
+    if ((existing?.role === UserRole.USER && id) !== userId) {
+      throw new UnauthorizedException('Unauthorized');
+    }
     const payload: Partial<User> = { ...dto };
     if (dto.password) {
       payload.password = await argon.hash(dto.password);
@@ -56,7 +80,14 @@ export class UserService {
     return this.userRepository.findOneBy({ id });
   }
 
-  remove({ id }: { id: number }) {
+  async remove({ id, userId }: { id: number; userId: number }) {
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    if ((user?.role === UserRole.USER && id) !== userId) {
+      throw new UnauthorizedException('Unauthorized');
+    }
     return this.userRepository.delete(id);
   }
 }
