@@ -47,8 +47,13 @@ export class UserService {
     return this.userRepository.findOneBy({ id });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.userRepository.update(id, updateUserDto);
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const payload: Partial<User> = { ...updateUserDto };
+    if (updateUserDto.password) {
+      payload.password = await argon.hash(updateUserDto.password);
+    }
+    await this.userRepository.update(id, payload);
+    return this.userRepository.findOneBy({ id });
   }
 
   remove(id: number) {
