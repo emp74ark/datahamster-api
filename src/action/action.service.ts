@@ -3,7 +3,8 @@ import { CreateActionDto } from './dto/create-action.dto';
 import { UpdateActionDto } from './dto/update-action.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Action } from './entities/action.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
+import { UserRole } from '../user/entities/user.enums';
 
 @Injectable()
 export class ActionService {
@@ -19,13 +20,25 @@ export class ActionService {
     });
   }
 
-  findAll({ userId }: { userId: string }) {
-    return this.actionRepository.find({ where: { user: { id: userId } } });
+  findAll({ userId, role }: { userId: string; role: UserRole }) {
+    const where: FindOptionsWhere<Action> =
+      role === UserRole.USER ? { user: { id: userId } } : {};
+    return this.actionRepository.find({ where });
   }
 
-  async findOne({ id, userId }: { id: string; userId: string }) {
+  async findOne({
+    id,
+    userId,
+    role,
+  }: {
+    id: string;
+    userId: string;
+    role: UserRole;
+  }) {
+    const where: FindOptionsWhere<Action> =
+      role === UserRole.USER ? { user: { id: userId }, id } : { id };
     const action = await this.actionRepository.findOne({
-      where: { id },
+      where,
       relations: { events: true },
     });
     if (!action) {
@@ -38,13 +51,17 @@ export class ActionService {
     id,
     dto,
     userId,
+    role,
   }: {
     id: string;
     dto: UpdateActionDto;
     userId: string;
+    role: UserRole;
   }) {
+    const where: FindOptionsWhere<Action> =
+      role === UserRole.USER ? { user: { id: userId }, id } : { id };
     const action = await this.actionRepository.findOne({
-      where: { id },
+      where,
     });
     if (!action) {
       throw new NotFoundException('Action not found');
@@ -54,8 +71,18 @@ export class ActionService {
     return this.actionRepository.findOneBy({ id });
   }
 
-  async remove({ id, userId }: { id: string; userId: string }) {
-    const result = await this.actionRepository.delete(id);
+  async remove({
+    id,
+    userId,
+    role,
+  }: {
+    id: string;
+    userId: string;
+    role: UserRole;
+  }) {
+    const where: FindOptionsWhere<Action> =
+      role === UserRole.USER ? { user: { id: userId }, id } : { id };
+    const result = await this.actionRepository.delete(where);
     return {
       message: result?.affected
         ? 'Action deleted successfully'

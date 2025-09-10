@@ -71,7 +71,6 @@ export class UserService {
     if (role === UserRole.USER && id !== userId) {
       throw new UnauthorizedException('Unauthorized');
     }
-
     return user;
   }
 
@@ -98,14 +97,10 @@ export class UserService {
       payload.password = await argon.hash(dto.password);
     }
     await this.userRepository.update(id, payload);
-    const user = await this.userRepository.findOne({
+    return this.userRepository.findOne({
       where: { id },
       select: userPublicFields,
     });
-    if (!user) {
-      throw new InternalServerErrorException('User update failedL');
-    }
-    return user;
   }
 
   async remove({

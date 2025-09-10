@@ -23,14 +23,14 @@ export class ActionController {
   @Post()
   create(
     @Body() dto: CreateActionDto,
-    @Session() { user: { id: userId, role } }: AuthSession,
+    @Session() { user: { id: userId } }: AuthSession,
   ) {
     return this.actionService.create({ userId, dto });
   }
 
   @Get()
   findAll(@Session() { user: { id: userId, role } }: AuthSession) {
-    return this.actionService.findAll({ userId });
+    return this.actionService.findAll({ userId, role });
   }
 
   @Get(':id')
@@ -38,7 +38,7 @@ export class ActionController {
     @Param('id') id: string,
     @Session() { user: { id: userId, role } }: AuthSession,
   ) {
-    return this.actionService.findOne({ id, userId });
+    return this.actionService.findOne({ id, userId, role });
   }
 
   @Patch(':id')
@@ -47,7 +47,7 @@ export class ActionController {
     @Body() dto: UpdateActionDto,
     @Session() { user: { id: userId, role } }: AuthSession,
   ) {
-    return this.actionService.update({ id, userId, dto });
+    return this.actionService.update({ id, userId, role, dto });
   }
 
   @Delete(':id')
@@ -55,6 +55,6 @@ export class ActionController {
     @Param('id') id: string,
     @Session() { user: { id: userId, role } }: AuthSession,
   ) {
-    return this.actionService.remove({ id, userId });
+    return this.actionService.remove({ id, userId, role });
   }
 }

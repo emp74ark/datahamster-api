@@ -23,14 +23,14 @@ export class EventController {
   @Post()
   create(
     @Body() dto: CreateEventDto,
-    @Session() { user: { id: userId, role } }: AuthSession,
+    @Session() { user: { id: userId } }: AuthSession,
   ) {
     return this.eventService.create({ userId, dto });
   }
 
   @Get()
   findAll(@Session() { user: { id: userId, role } }: AuthSession) {
-    return this.eventService.findAll({ userId });
+    return this.eventService.findAll({ userId, role });
   }
 
   @Get(':id')
@@ -38,7 +38,7 @@ export class EventController {
     @Param('id') id: string,
     @Session() { user: { id: userId, role } }: AuthSession,
   ) {
-    return this.eventService.findOne({ id, userId });
+    return this.eventService.findOne({ id, userId, role });
   }
 
   @Patch(':id')
@@ -47,7 +47,7 @@ export class EventController {
     @Body() dto: UpdateEventDto,
     @Session() { user: { id: userId, role } }: AuthSession,
   ) {
-    return this.eventService.update({ id, userId, dto });
+    return this.eventService.update({ id, userId, role, dto });
   }
 
   @Delete(':id')
@@ -55,6 +55,6 @@ export class EventController {
     @Param('id') id: string,
     @Session() { user: { id: userId, role } }: AuthSession,
   ) {
-    return this.eventService.remove({ id, userId });
+    return this.eventService.remove({ id, userId, role });
   }
 }

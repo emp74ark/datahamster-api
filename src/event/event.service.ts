@@ -3,7 +3,8 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Event } from './entities/event.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
+import { UserRole } from '../user/entities/user.enums';
 
 @Injectable()
 export class EventService {
@@ -19,13 +20,25 @@ export class EventService {
     });
   }
 
-  findAll({ userId }: { userId: string }) {
-    return this.eventRepository.find({ where: { user: { id: userId } } });
+  findAll({ userId, role }: { userId: string; role: UserRole }) {
+    const where: FindOptionsWhere<Event> =
+      role === UserRole.USER ? { user: { id: userId } } : {};
+    return this.eventRepository.find({ where });
   }
 
-  async findOne({ id, userId }: { id: string; userId: string }) {
+  async findOne({
+    id,
+    userId,
+    role,
+  }: {
+    id: string;
+    userId: string;
+    role: UserRole;
+  }) {
+    const where: FindOptionsWhere<Event> =
+      role === UserRole.USER ? { user: { id: userId }, id } : { id };
     const event = await this.eventRepository.findOne({
-      where: { id },
+      where,
     });
     if (!event) {
       throw new NotFoundException('Event not found');
@@ -36,14 +49,18 @@ export class EventService {
   async update({
     id,
     userId,
+    role,
     dto,
   }: {
     id: string;
     userId: string;
+    role: UserRole;
     dto: UpdateEventDto;
   }) {
+    const where: FindOptionsWhere<Event> =
+      role === UserRole.USER ? { user: { id: userId }, id } : { id };
     const event = await this.eventRepository.findOne({
-      where: { id },
+      where,
     });
     if (!event) {
       throw new NotFoundException('Event not found');
@@ -55,8 +72,18 @@ export class EventService {
     return this.eventRepository.findOneBy({ id });
   }
 
-  async remove({ id, userId }: { id: string; userId: string }) {
-    const result = await this.eventRepository.delete(id);
+  async remove({
+    id,
+    userId,
+    role,
+  }: {
+    id: string;
+    userId: string;
+    role: UserRole;
+  }) {
+    const where: FindOptionsWhere<Event> =
+      role === UserRole.USER ? { user: { id: userId }, id } : { id };
+    const result = await this.eventRepository.delete(where);
     return {
       message: result?.affected
         ? 'Event deleted successfully'

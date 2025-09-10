@@ -23,14 +23,14 @@ export class SourceController {
   @Post()
   create(
     @Body() dto: CreateSourceDto,
-    @Session() { user: { id: userId, role } }: AuthSession,
+    @Session() { user: { id: userId } }: AuthSession,
   ) {
     return this.sourceService.create({ userId, dto });
   }
 
   @Get()
   findAll(@Session() { user: { id: userId, role } }: AuthSession) {
-    return this.sourceService.findAll({ userId });
+    return this.sourceService.findAll({ userId, role });
   }
 
   @Get(':id')
@@ -38,7 +38,7 @@ export class SourceController {
     @Param('id') id: string,
     @Session() { user: { id: userId, role } }: AuthSession,
   ) {
-    return this.sourceService.findOne({ id, userId });
+    return this.sourceService.findOne({ id, userId, role });
   }
 
   @Patch(':id')
@@ -47,7 +47,7 @@ export class SourceController {
     @Body() dto: UpdateSourceDto,
     @Session() { user: { id: userId, role } }: AuthSession,
   ) {
-    return this.sourceService.update({ id, userId, dto });
+    return this.sourceService.update({ id, userId, role, dto });
   }
 
   @Delete(':id')
@@ -55,6 +55,6 @@ export class SourceController {
     @Param('id') id: string,
     @Session() { user: { id: userId, role } }: AuthSession,
   ) {
-    return this.sourceService.remove({ id, userId });
+    return this.sourceService.remove({ id, userId, role });
   }
 }
