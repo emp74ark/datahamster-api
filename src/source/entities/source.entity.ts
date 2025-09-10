@@ -9,7 +9,6 @@ import {
 } from 'typeorm';
 import { Action } from '../../action/entities/action.entity';
 import { User } from '../../user/entities/user.entity';
-import { Event } from '../../event/entities/event.entity';
 
 @Entity()
 export class Source {
