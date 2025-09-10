@@ -1,10 +1,13 @@
 {
-  "name": "datahamster-api",
+  "name": "@emp74ark/datahamster-api",
   "version": "0.0.1",
   "description": "DataHamster API",
   "author": "emp74ark",
   "private": true,
   "license": "ISC",
+  "publishConfig": {
+    "@emp74ark:registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

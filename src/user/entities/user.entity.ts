@@ -1,17 +1,25 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Exclude } from 'class-transformer';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { UserRole } from './user.enums';
+import { Source } from '../../source/entities/source.entity';
+import { Action } from '../../action/entities/action.entity';
+import { Event } from '../../event/entities/event.entity';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ length: 50, nullable: false, unique: true })
-  login: string;
+  username: string;
 
-  @Exclude({ toPlainOnly: true })
-  @Column({ length: 500, nullable: false, select: false })
+  @Column({ length: 500, nullable: false })
   password: string;
 
   @Column({
@@ -22,9 +30,30 @@ export class User {
   })
   role: UserRole;
 
-  @Column({ default: new Date() })
+  @Column({ length: 150, nullable: false })
+  email: string;
+
+  @OneToMany(() => Source, (source: Source) => source.user, {
+    cascade: false,
+  })
+  sources: Source[];
+
+  @OneToMany(() => Action, (action: Action) => action.user, {
+    cascade: false,
+  })
+  actions: Action[];
+
+  @OneToMany(() => Event, (event: Event) => event.user, {
+    cascade: false,
+  })
+  events: Event[];
+
+  @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;
 
-  @Column({ default: new Date() })
+  @UpdateDateColumn({ type: 'timestamp with time zone' })
   updatedAt: Date;
+
+  @Column({ default: new Date() })
+  lastLogin: Date;
 }

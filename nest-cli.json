@@ -4,5 +4,16 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true
+  },
+  "schematics": {
+    "@nestjs/schematics:controller": {
+      "skipTests": true
+    },
+    "@nestjs/schematics:service": {
+      "skipTests": true
+    },
+    "@nestjs/schematics:module": {
+      "skipTests": false
+    }
   }
 }

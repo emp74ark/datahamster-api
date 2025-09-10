@@ -1,0 +1,49 @@
+@actionId = 0f72eab0-24f3-488b-a83d-44201b3d2b37
+@eventId = a6ced88c-b716-40ff-90d4-8956b07d0ef1
+
+### CREATE EVENT
+# @no-log
+POST {{backend}}/event
+Content-Type: application/json
+
+{
+  "localTime": "2025-01-01T12:00:00.000Z",
+  "ip": "127.0.0.1",
+  "data": { "page": "/home", "clicked": true },
+  "actionId": "{{actionId}}"
+}
+
+###
+
+### LIST EVENTS (current user)
+# @no-log
+GET {{backend}}/event
+Content-Type: application/json
+
+###
+
+### GET EVENT BY ID
+# @no-log
+GET {{backend}}/event/{{eventId}}
+Content-Type: application/json
+
+###
+
+### UPDATE EVENT
+# @no-log
+PATCH {{backend}}/event/{{eventId}}
+Content-Type: application/json
+
+{
+  "ip": "192.168.1.10",
+  "data": { "page": "/dashboard", "clicked": false }
+}
+
+###
+
+### DELETE EVENT
+# @no-log
+DELETE {{backend}}/event/{{eventId}}
+Content-Type: application/json
+
+###

@@ -1,0 +1,47 @@
+### GET ALL USERS
+# @no-log
+GET {{backend}}/user
+Content-Type: application/json
+
+###
+
+### GET USER BY ID
+# @no-log
+GET {{backend}}/user/8
+Content-Type: application/json
+
+###
+
+
+### CREATE USER
+# @no-log
+POST {{backend}}/user
+Accept: application/json
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "password",
+  "role": "admin",
+  "email": "jazelle_greenzjb@enrolled.ulj"
+}
+
+###
+
+### PATCH USER
+# @no-log
+PATCH {{backend}}/user/7
+Content-Type: application/json
+
+{
+  "email": "alphonso_collinsibd@leather.keo"
+}
+
+###
+
+### CREATE USER
+# @no-log
+DELETE {{backend}}/user/8
+Content-Type: application/json
+
+###

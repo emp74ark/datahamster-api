@@ -1,0 +1,44 @@
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { User } from '../../user/entities/user.entity';
+import { Source } from '../../source/entities/source.entity';
+import { Event } from '../../event/entities/event.entity';
+
+@Entity()
+export class Action {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ nullable: false })
+  name: string;
+
+  @ManyToOne(() => User, (user: User) => user.actions, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  user: User;
+
+  @ManyToOne(() => Source, (source: Source) => source.actions, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  source: Source;
+
+  @OneToMany(() => Event, (event: Event) => event.action, {
+    cascade: false,
+  })
+  events: Event[];
+
+  @CreateDateColumn({ type: 'timestamp without time zone' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp without time zone' })
+  updatedAt: Date;
+}

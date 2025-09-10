@@ -5,6 +5,14 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { SharedModule } from './shared/shared.module';
+import { AuthModule } from './auth/auth.module';
+import { ActionModule } from './action/action.module';
+import { EventModule } from './event/event.module';
+import { SourceModule } from './source/source.module';
+import { User } from './user/entities/user.entity';
+import { Source } from './source/entities/source.entity';
+import { Action } from './action/entities/action.entity';
+import { Event } from './event/entities/event.entity';
 
 @Module({
   imports: [
@@ -18,13 +26,17 @@ import { SharedModule } from './shared/shared.module';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        autoLoadEntities: true,
+        entities: [User, Source, Action, Event],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
     UserModule,
     SharedModule,
+    AuthModule,
+    ActionModule,
+    EventModule,
+    SourceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
