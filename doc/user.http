@@ -1,3 +1,4 @@
+@userId = 514091f1-fe91-4e9d-be9d-9e381e74a534
 ### GET ALL USERS
 # @no-log
 GET {{backend}}/user
@@ -7,7 +8,7 @@ Content-Type: application/json
 
 ### GET USER BY ID
 # @no-log
-GET {{backend}}/user/8
+GET {{backend}}/user/{{userId}}
 Content-Type: application/json
 
 ###
@@ -30,7 +31,7 @@ Content-Type: application/json
 
 ### PATCH USER
 # @no-log
-PATCH {{backend}}/user/7
+PATCH {{backend}}/user/{{userId}}
 Content-Type: application/json
 
 {
