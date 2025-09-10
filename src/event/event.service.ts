@@ -59,17 +59,17 @@ export class EventService {
   }) {
     const where: FindOptionsWhere<Event> =
       role === UserRole.USER ? { user: { id: userId }, id } : { id };
-    const event = await this.eventRepository.findOne({
+    const existing = await this.eventRepository.findOne({
       where,
     });
-    if (!event) {
+    if (!existing) {
       throw new NotFoundException('Event not found');
     }
     const payload: Omit<UpdateEventDto, 'user' | 'action'> = {
       ...dto,
     };
-    await this.eventRepository.update(event.id, payload);
-    return this.eventRepository.findOneBy({ id });
+    await this.eventRepository.update({ id }, payload);
+    return this.eventRepository.findOne({ where });
   }
 
   async remove({

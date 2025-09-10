@@ -60,15 +60,15 @@ export class ActionService {
   }) {
     const where: FindOptionsWhere<Action> =
       role === UserRole.USER ? { user: { id: userId }, id } : { id };
-    const action = await this.actionRepository.findOne({
+    const existing = await this.actionRepository.findOne({
       where,
     });
-    if (!action) {
+    if (!existing) {
       throw new NotFoundException('Action not found');
     }
     const payload = <Omit<UpdateActionDto, 'user'>>{ ...dto };
-    await this.actionRepository.update(id, payload);
-    return this.actionRepository.findOneBy({ id });
+    await this.actionRepository.update({ id }, payload);
+    return this.actionRepository.findOne({ where });
   }
 
   async remove({

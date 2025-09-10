@@ -60,15 +60,15 @@ export class SourceService {
   }) {
     const where: FindOptionsWhere<Source> =
       role === UserRole.USER ? { user: { id: userId }, id } : { id };
-    const source = await this.sourceRepository.findOne({
+    const existing = await this.sourceRepository.findOne({
       where,
     });
-    if (!source) {
+    if (!existing) {
       throw new NotFoundException('Source not found');
     }
     await this.sourceRepository.update({ id }, dto);
     return this.sourceRepository.findOne({
-      where: { id },
+      where,
     });
   }
 
