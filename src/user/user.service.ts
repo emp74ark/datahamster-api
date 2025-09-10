@@ -88,7 +88,9 @@ export class UserService {
     if (role === UserRole.USER && id !== userId) {
       throw new UnauthorizedException('Unauthorized');
     }
-    const payload: Partial<User> = { ...dto };
+    const payload: Omit<Partial<User>, 'sources' | 'actions' | 'events'> = {
+      ...dto,
+    };
     Reflect.deleteProperty(payload, 'role');
     if (dto.password) {
       payload.password = await argon.hash(dto.password);

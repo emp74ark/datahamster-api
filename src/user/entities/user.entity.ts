@@ -2,10 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { UserRole } from './user.enums';
+import { Source } from '../../source/entities/source.entity';
+import { Action } from '../../action/entities/action.entity';
+import { Event } from '../../event/entities/event.entity';
 
 @Entity()
 export class User {
@@ -28,6 +32,21 @@ export class User {
 
   @Column({ length: 150, nullable: false })
   email: string;
+
+  @OneToMany(() => Source, (source: Source) => source.user, {
+    cascade: false,
+  })
+  sources: Source[];
+
+  @OneToMany(() => Action, (action: Action) => action.user, {
+    cascade: false,
+  })
+  actions: Action[];
+
+  @OneToMany(() => Event, (event: Event) => event.user, {
+    cascade: false,
+  })
+  events: Event[];
 
   @CreateDateColumn({ type: 'timestamp with time zone' })
   createdAt: Date;

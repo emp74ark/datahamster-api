@@ -2,9 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { User } from '../../user/entities/user.entity';
+import { Source } from '../../source/entities/source.entity';
+import { Event } from '../../event/entities/event.entity';
 
 @Entity()
 export class Action {
@@ -14,8 +19,22 @@ export class Action {
   @Column({ nullable: false })
   name: string;
 
-  @Column('simple-array')
-  events: string[];
+  @ManyToOne(() => User, (user: User) => user.actions, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  user: User;
+
+  @ManyToOne(() => Source, (source: Source) => source.actions, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  source: Source;
+
+  @OneToMany(() => Event, (event: Event) => event.action, {
+    cascade: false,
+  })
+  events: Event[];
 
   @CreateDateColumn({ type: 'timestamp without time zone' })
   createdAt: Date;
