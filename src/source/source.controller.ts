@@ -6,12 +6,15 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { SourceService } from './source.service';
 import { CreateSourceDto } from './dto/create-source.dto';
 import { UpdateSourceDto } from './dto/update-source.dto';
 import { SessionUserId } from '../auth/decorators/session-user.decorator';
+import { SessionGuard } from '../auth/guards/session.guard';
 
+@UseGuards(SessionGuard)
 @Controller('source')
 export class SourceController {
   constructor(private readonly sourceService: SourceService) {}
