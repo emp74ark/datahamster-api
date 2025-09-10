@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import * as argon from 'argon2';
 import { InjectRepository } from '@nestjs/typeorm';
+import { userPublicFields } from '../user/entities/user.constants';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +18,10 @@ export class AuthService {
   ) {}
 
   async login({ dto: { username, password } }: { dto: AuthLoginDto }) {
-    const user = await this.userRepository.findOneBy({ username });
+    const user = await this.userRepository.findOne({
+      where: { username },
+      select: userPublicFields,
+    });
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
@@ -33,8 +37,6 @@ export class AuthService {
 
     await this.userRepository.update(user.id, { lastLogin });
 
-    Reflect.deleteProperty(user, 'password');
-
     return { ...user, lastLogin };
   }
 
@@ -49,17 +51,18 @@ export class AuthService {
 
     const hash = await argon.hash(dto.password);
 
-    const user = await this.userRepository.save({
+    const { id } = await this.userRepository.save({
       ...dto,
       password: hash,
     });
 
-    if (!user) {
+    if (!id) {
       throw new InternalServerErrorException('User not created');
     }
 
-    Reflect.deleteProperty(user, 'password');
-
-    return user;
+    return this.userRepository.findOne({
+      where: { id },
+      select: userPublicFields,
+    });
   }
 }
