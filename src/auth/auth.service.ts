@@ -2,6 +2,7 @@ import {
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { AuthSignupDto } from './dto/auth-signup.dto';
@@ -46,7 +47,7 @@ export class AuthService {
     });
 
     if (existingUser) {
-      throw new UnauthorizedException('User already exists');
+      throw new BadRequestException('User already exists');
     }
 
     const hash = await argon.hash(dto.password);

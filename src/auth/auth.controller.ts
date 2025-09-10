@@ -17,7 +17,6 @@ import { AuthSignupDto } from './dto/auth-signup.dto';
 import { Request, Response } from 'express';
 import { SessionGuard } from './guards/session.guard';
 import { AuthSession } from './auth.types';
-import { User } from '../user/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -28,7 +27,8 @@ export class AuthController {
   async login(@Body() dto: AuthLoginDto, @Session() session: AuthSession) {
     const user = await this.authService.login({ dto });
     if (user) {
-      session.user = <Pick<User, 'id' | 'role'>>{ ...user };
+      const { id, role } = user;
+      session.user = { id, role };
     }
     return user;
   }
@@ -38,7 +38,8 @@ export class AuthController {
   async signup(@Body() dto: AuthSignupDto, @Session() session: AuthSession) {
     const user = await this.authService.signup({ dto });
     if (user) {
-      session.user = <Pick<User, 'id' | 'role'>>{ ...user };
+      const { id, role } = user;
+      session.user = { id, role };
     }
     return user;
   }
@@ -50,10 +51,10 @@ export class AuthController {
       if (err) {
         throw new InternalServerErrorException('Error logging out');
       }
+      res
+        .clearCookie('connect.sid')
+        .status(HttpStatus.OK)
+        .json({ message: 'Successfully logged out' });
     });
-    res
-      .clearCookie('connect.sid')
-      .status(HttpStatus.OK)
-      .json({ message: 'Successfully logged out' });
   }
 }
