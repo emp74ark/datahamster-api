@@ -1,22 +1,36 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSourceDto } from './dto/create-source.dto';
 import { UpdateSourceDto } from './dto/update-source.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Source } from './entities/source.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class SourceService {
-  create({ userId, dto }: { userId: string; dto: CreateSourceDto }) {
-    return 'This action adds a new source';
+  constructor(
+    @InjectRepository(Source)
+    private readonly sourceRepository: Repository<Source>,
+  ) {}
+  create({ dto }: { dto: CreateSourceDto }) {
+    return this.sourceRepository.save(dto);
   }
 
   findAll({ userId }: { userId: string }) {
-    return `This action returns all source`;
+    return this.sourceRepository.find({ where: { user: { id: userId } } });
   }
 
-  findOne({ id, userId }: { id: string; userId: string }) {
-    return `This action returns a #${id} source`;
+  async findOne({ id, userId }: { id: string; userId: string }) {
+    const source = await this.sourceRepository.findOneBy({ id });
+    if (!source) {
+      throw new NotFoundException('Source not found');
+    }
+    if (source.user.id !== userId) {
+      throw new NotFoundException('Unauthorized');
+    }
+    return source;
   }
 
-  update({
+  async update({
     id,
     userId,
     dto,
@@ -25,10 +39,24 @@ export class SourceService {
     userId: string;
     dto: UpdateSourceDto;
   }) {
-    return `This action updates a #${id} source`;
+    const source = await this.sourceRepository.findOneBy({ id });
+    if (!source) {
+      throw new NotFoundException('Source not found');
+    }
+    if (source.user.id !== userId) {
+      throw new NotFoundException('Unauthorized');
+    }
+    return this.sourceRepository.update({ id }, dto);
   }
 
-  remove({ id, userId }: { id: string; userId: string }) {
-    return `This action removes a #${id} source`;
+  async remove({ id, userId }: { id: string; userId: string }) {
+    const source = await this.sourceRepository.findOneBy({ id });
+    if (!source) {
+      throw new NotFoundException('Source not found');
+    }
+    if (source.user.id !== userId) {
+      throw new NotFoundException('Unauthorized');
+    }
+    return this.sourceRepository.delete({ id });
   }
 }

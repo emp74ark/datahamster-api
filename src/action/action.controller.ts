@@ -17,8 +17,8 @@ export class ActionController {
   constructor(private readonly actionService: ActionService) {}
 
   @Post()
-  create(@Body() dto: CreateActionDto, @SessionUserId() userId: string) {
-    return this.actionService.create({ dto, userId });
+  create(@Body() dto: CreateActionDto) {
+    return this.actionService.create({ dto });
   }
 
   @Get()

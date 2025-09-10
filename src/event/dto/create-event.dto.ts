@@ -1,5 +1,4 @@
-import { IsDate, IsIP, IsJSON, IsOptional } from 'class-validator';
-import { JSONValue } from '../../shared/shared.types';
+import { IsDate, IsIP, IsJSON, IsOptional, IsUUID } from 'class-validator';
 
 export class CreateEventDto {
   @IsDate()
@@ -12,5 +11,8 @@ export class CreateEventDto {
 
   @IsJSON()
   @IsOptional()
-  data: JSONValue;
+  data?: string;
+
+  @IsUUID()
+  actionId: string;
 }

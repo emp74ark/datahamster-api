@@ -1,22 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Event } from './entities/event.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class EventService {
-  create({ userId, dto }: { userId: string; dto: CreateEventDto }) {
-    return 'This action adds a new event';
+  constructor(
+    @InjectRepository(Event)
+    private readonly eventRepository: Repository<Event>,
+  ) {}
+  create({ dto }: { dto: CreateEventDto }) {
+    return this.eventRepository.save(dto);
   }
 
   findAll({ userId }: { userId: string }) {
-    return `This action returns all event`;
+    return this.eventRepository.find({ where: { user: { id: userId } } });
   }
 
-  findOne({ id, userId }: { id: string; userId: string }) {
-    return `This action returns a #${id} event`;
+  async findOne({ id, userId }: { id: string; userId: string }) {
+    const event = await this.eventRepository.findOne({ where: { id } });
+    if (!event) {
+      throw new NotFoundException('Event not found');
+    }
+    if (event.user.id !== userId) {
+      throw new BadRequestException('Unauthorized');
+    }
+    return event;
   }
 
-  update({
+  async update({
     id,
     userId,
     dto,
@@ -25,10 +43,28 @@ export class EventService {
     userId: string;
     dto: UpdateEventDto;
   }) {
-    return `This action updates a #${id} event`;
+    const event = await this.eventRepository.findOne({ where: { id } });
+    if (!event) {
+      throw new NotFoundException('Event not found');
+    }
+    if (event.user.id !== userId) {
+      throw new BadRequestException('Unauthorized');
+    }
+
+    const payload: Omit<UpdateEventDto, 'user' | 'action'> = {
+      ...dto,
+    };
+    return this.eventRepository.update(event.id, payload);
   }
 
-  remove({ id, userId }: { id: string; userId: string }) {
-    return `This action removes a #${id} event`;
+  async remove({ id, userId }: { id: string; userId: string }) {
+    const event = await this.eventRepository.findOne({ where: { id } });
+    if (!event) {
+      throw new NotFoundException('Event not found');
+    }
+    if (event.user.id !== userId) {
+      throw new BadRequestException('Unauthorized');
+    }
+    return this.eventRepository.remove(event);
   }
 }

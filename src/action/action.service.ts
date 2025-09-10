@@ -1,22 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateActionDto } from './dto/create-action.dto';
 import { UpdateActionDto } from './dto/update-action.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Action } from './entities/action.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ActionService {
-  create({ dto, userId }: { dto: CreateActionDto; userId: string }) {
-    return 'This action adds a new action';
+  constructor(
+    @InjectRepository(Action)
+    private readonly actionRepository: Repository<Action>,
+  ) {}
+  create({ dto }: { dto: CreateActionDto }) {
+    return this.actionRepository.save(dto);
   }
 
   findAll({ userId }: { userId: string }) {
-    return `This action returns all action`;
+    return this.actionRepository.find({ where: { user: { id: userId } } });
   }
 
-  findOne({ id, userId }: { id: string; userId: string }) {
-    return `This action returns a #${id} action`;
+  async findOne({ id, userId }: { id: string; userId: string }) {
+    const action = await this.actionRepository.findOneBy({ id });
+    if (!action) {
+      throw new NotFoundException('Action not found');
+    }
+    if (action.user.id !== userId) {
+      throw new BadRequestException('Unauthorized');
+    }
+    return action;
   }
 
-  update({
+  async update({
     id,
     dto,
     userId,
@@ -25,10 +43,25 @@ export class ActionService {
     dto: UpdateActionDto;
     userId: string;
   }) {
-    return `This action updates a #${id} action`;
+    const action = await this.actionRepository.findOneBy({ id });
+    if (!action) {
+      throw new NotFoundException('Action not found');
+    }
+    if (action.user.id !== userId) {
+      throw new BadRequestException('Unauthorized');
+    }
+    const payload = <Omit<UpdateActionDto, 'user'>>{ ...dto };
+    return this.actionRepository.update(id, payload);
   }
 
-  remove({ id, userId }: { id: string; userId: string }) {
-    return `This action removes a #${id} action`;
+  async remove({ id, userId }: { id: string; userId: string }) {
+    const action = await this.actionRepository.findOneBy({ id });
+    if (!action) {
+      throw new NotFoundException('Action not found');
+    }
+    if (action.user.id !== userId) {
+      throw new BadRequestException('Unauthorized');
+    }
+    return this.actionRepository.delete(id);
   }
 }

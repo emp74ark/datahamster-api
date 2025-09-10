@@ -5,7 +5,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { JSONValue } from '../../shared/shared.types';
 import { User } from '../../user/entities/user.entity';
 import { Action } from '../../action/entities/action.entity';
 
@@ -21,7 +20,7 @@ export class Event {
   ip: string;
 
   @Column({ type: 'simple-json' })
-  data: JSONValue;
+  data?: string;
 
   @ManyToOne(() => User, (user: User) => user.events, {
     nullable: false,
