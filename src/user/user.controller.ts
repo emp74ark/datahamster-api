@@ -43,7 +43,6 @@ export class UserController {
     @SessionUserId() userId: string,
     @SessionRole() role: UserRole,
   ) {
-    console.log(userId);
     return this.userService.findOne({ id, userId, role });
   }
 
