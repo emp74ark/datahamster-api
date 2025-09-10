@@ -9,7 +9,7 @@ export class SessionGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const { session } = context
       .switchToHttp()
-      .getRequest<{ session: AuthSession }>();
-    return !!session.user;
+      .getRequest<{ session: AuthSession | undefined }>();
+    return Boolean(session && session.user);
   }
 }
