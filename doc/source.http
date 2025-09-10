@@ -1,0 +1,46 @@
+@sourceId = 0b243493-277b-4c35-8f10-e3ec133d5764
+
+### CREATE SOURCE
+# @no-log
+POST {{backend}}/source
+Content-Type: application/json
+
+{
+  "title": "My Source",
+  "description": "Optional description"
+}
+
+###
+
+### LIST SOURCES (current user)
+# @no-log
+GET {{backend}}/source
+Content-Type: application/json
+
+###
+
+### GET SOURCE BY ID
+# @no-log
+GET {{backend}}/source/{{sourceId}}
+Content-Type: application/json
+
+###
+
+### UPDATE SOURCE
+# @no-log
+PATCH {{backend}}/source/{{sourceId}}
+Content-Type: application/json
+
+{
+  "title": "Renamed Source",
+  "description": "Updated description"
+}
+
+###
+
+### DELETE SOURCE
+# @no-log
+DELETE {{backend}}/source/{{sourceId}}
+Content-Type: application/json
+
+###

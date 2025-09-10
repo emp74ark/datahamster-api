@@ -17,8 +17,8 @@ export class SourceController {
   constructor(private readonly sourceService: SourceService) {}
 
   @Post()
-  create(@Body() dto: CreateSourceDto) {
-    return this.sourceService.create({ dto });
+  create(@Body() dto: CreateSourceDto, @SessionUserId() userId: string) {
+    return this.sourceService.create({ userId, dto });
   }
 
   @Get()

@@ -1,4 +1,4 @@
-import { IsDate, IsIP, IsJSON, IsOptional, IsUUID } from 'class-validator';
+import { IsDate, IsIP, IsOptional, IsUUID } from 'class-validator';
 
 export class CreateEventDto {
   @IsDate()
@@ -9,9 +9,8 @@ export class CreateEventDto {
   @IsOptional()
   ip: string;
 
-  @IsJSON()
   @IsOptional()
-  data?: string;
+  data?: Record<string, string | number | boolean>;
 
   @IsUUID()
   actionId: string;

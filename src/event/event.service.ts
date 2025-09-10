@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,8 +11,12 @@ export class EventService {
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
   ) {}
-  create({ dto }: { dto: CreateEventDto }) {
-    return this.eventRepository.save(dto);
+  create({ userId, dto }: { userId: string; dto: CreateEventDto }) {
+    return this.eventRepository.save({
+      ...dto,
+      user: { id: userId },
+      action: { id: dto.actionId },
+    });
   }
 
   findAll({ userId }: { userId: string }) {
@@ -24,12 +24,11 @@ export class EventService {
   }
 
   async findOne({ id, userId }: { id: string; userId: string }) {
-    const event = await this.eventRepository.findOne({ where: { id } });
+    const event = await this.eventRepository.findOne({
+      where: { id },
+    });
     if (!event) {
       throw new NotFoundException('Event not found');
-    }
-    if (event.user.id !== userId) {
-      throw new BadRequestException('Unauthorized');
     }
     return event;
   }
@@ -43,27 +42,25 @@ export class EventService {
     userId: string;
     dto: UpdateEventDto;
   }) {
-    const event = await this.eventRepository.findOne({ where: { id } });
+    const event = await this.eventRepository.findOne({
+      where: { id },
+    });
     if (!event) {
       throw new NotFoundException('Event not found');
     }
-    if (event.user.id !== userId) {
-      throw new BadRequestException('Unauthorized');
-    }
-
     const payload: Omit<UpdateEventDto, 'user' | 'action'> = {
       ...dto,
     };
-    return this.eventRepository.update(event.id, payload);
+    await this.eventRepository.update(event.id, payload);
+    return this.eventRepository.findOneBy({ id });
   }
 
   async remove({ id, userId }: { id: string; userId: string }) {
-    const event = await this.eventRepository.findOne({ where: { id } });
+    const event = await this.eventRepository.findOne({
+      where: { id },
+    });
     if (!event) {
       throw new NotFoundException('Event not found');
-    }
-    if (event.user.id !== userId) {
-      throw new BadRequestException('Unauthorized');
     }
     return this.eventRepository.remove(event);
   }

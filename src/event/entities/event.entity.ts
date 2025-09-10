@@ -20,7 +20,7 @@ export class Event {
   ip: string;
 
   @Column({ type: 'simple-json' })
-  data?: string;
+  data?: Record<string, string | number | boolean>;
 
   @ManyToOne(() => User, (user: User) => user.events, {
     nullable: false,

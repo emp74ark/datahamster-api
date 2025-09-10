@@ -120,6 +120,6 @@ export class UserService {
     if (role === UserRole.USER && id !== userId) {
       throw new UnauthorizedException('Unauthorized');
     }
-    return this.userRepository.delete(id);
+    return this.userRepository.delete(user);
   }
 }

@@ -11,8 +11,11 @@ export class SourceService {
     @InjectRepository(Source)
     private readonly sourceRepository: Repository<Source>,
   ) {}
-  create({ dto }: { dto: CreateSourceDto }) {
-    return this.sourceRepository.save(dto);
+  create({ userId, dto }: { userId: string; dto: CreateSourceDto }) {
+    return this.sourceRepository.save({
+      ...dto,
+      user: { id: userId },
+    });
   }
 
   findAll({ userId }: { userId: string }) {
@@ -20,12 +23,11 @@ export class SourceService {
   }
 
   async findOne({ id, userId }: { id: string; userId: string }) {
-    const source = await this.sourceRepository.findOneBy({ id });
+    const source = await this.sourceRepository.findOne({
+      where: { id },
+    });
     if (!source) {
       throw new NotFoundException('Source not found');
-    }
-    if (source.user.id !== userId) {
-      throw new NotFoundException('Unauthorized');
     }
     return source;
   }
@@ -39,24 +41,23 @@ export class SourceService {
     userId: string;
     dto: UpdateSourceDto;
   }) {
-    const source = await this.sourceRepository.findOneBy({ id });
+    const source = await this.sourceRepository.findOne({
+      where: { id },
+    });
     if (!source) {
       throw new NotFoundException('Source not found');
     }
-    if (source.user.id !== userId) {
-      throw new NotFoundException('Unauthorized');
-    }
-    return this.sourceRepository.update({ id }, dto);
+    await this.sourceRepository.update({ id }, dto);
+    return this.sourceRepository.findOneBy({ id });
   }
 
   async remove({ id, userId }: { id: string; userId: string }) {
-    const source = await this.sourceRepository.findOneBy({ id });
+    const source = await this.sourceRepository.findOne({
+      where: { id },
+    });
     if (!source) {
       throw new NotFoundException('Source not found');
     }
-    if (source.user.id !== userId) {
-      throw new NotFoundException('Unauthorized');
-    }
-    return this.sourceRepository.delete({ id });
+    return this.sourceRepository.delete(source);
   }
 }
