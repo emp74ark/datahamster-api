@@ -117,13 +117,14 @@ export class UserService {
     userId: string;
     role: UserRole;
   }) {
-    const user = await this.userRepository.findOneBy({ id });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
     if (role === UserRole.USER && id !== userId) {
       throw new UnauthorizedException('Unauthorized');
     }
-    return this.userRepository.delete(user);
+    const result = await this.userRepository.delete(id);
+    return {
+      message: result?.affected
+        ? 'User deleted successfully'
+        : 'User not found',
+    };
   }
 }

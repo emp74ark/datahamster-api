@@ -56,12 +56,11 @@ export class EventService {
   }
 
   async remove({ id, userId }: { id: string; userId: string }) {
-    const event = await this.eventRepository.findOne({
-      where: { id },
-    });
-    if (!event) {
-      throw new NotFoundException('Event not found');
-    }
-    return this.eventRepository.remove(event);
+    const result = await this.eventRepository.delete(id);
+    return {
+      message: result?.affected
+        ? 'Event deleted successfully'
+        : 'Event not found',
+    };
   }
 }

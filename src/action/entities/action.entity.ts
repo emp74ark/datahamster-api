@@ -22,18 +22,18 @@ export class Action {
   @ManyToOne(() => User, (user: User) => user.actions, {
     nullable: false,
     onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
   })
   user: User;
 
   @ManyToOne(() => Source, (source: Source) => source.actions, {
     nullable: false,
     onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
   })
   source: Source;
 
-  @OneToMany(() => Event, (event: Event) => event.action, {
-    cascade: false,
-  })
+  @OneToMany(() => Event, (event: Event) => event.action, {})
   events: Event[];
 
   @CreateDateColumn({ type: 'timestamp without time zone' })

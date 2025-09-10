@@ -25,12 +25,14 @@ export class Event {
   @ManyToOne(() => User, (user: User) => user.events, {
     nullable: false,
     onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
   })
   user: User;
 
   @ManyToOne(() => Action, (action: Action) => action.events, {
     nullable: false,
     onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
   })
   action: Action;
 

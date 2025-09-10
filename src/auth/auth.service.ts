@@ -20,7 +20,6 @@ export class AuthService {
   async login({ dto: { username, password } }: { dto: AuthLoginDto }) {
     const user = await this.userRepository.findOne({
       where: { username },
-      select: userPublicFields,
     });
 
     if (!user) {
@@ -33,11 +32,12 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const lastLogin = new Date();
+    await this.userRepository.update(user.id, { lastLogin: new Date() });
 
-    await this.userRepository.update(user.id, { lastLogin });
-
-    return { ...user, lastLogin };
+    return this.userRepository.findOne({
+      where: { username },
+      select: userPublicFields,
+    });
   }
 
   async signup({ dto }: { dto: AuthSignupDto }) {

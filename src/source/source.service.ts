@@ -21,14 +21,12 @@ export class SourceService {
   findAll({ userId }: { userId: string }) {
     return this.sourceRepository.find({
       where: { user: { id: userId } },
-      relations: { actions: true },
     });
   }
 
   async findOne({ id, userId }: { id: string; userId: string }) {
     const source = await this.sourceRepository.findOne({
       where: { id },
-      relations: { actions: true },
     });
     if (!source) {
       throw new NotFoundException('Source not found');
@@ -54,17 +52,15 @@ export class SourceService {
     await this.sourceRepository.update({ id }, dto);
     return this.sourceRepository.findOne({
       where: { id },
-      relations: { actions: true },
     });
   }
 
   async remove({ id, userId }: { id: string; userId: string }) {
-    const source = await this.sourceRepository.findOne({
-      where: { id },
-    });
-    if (!source) {
-      throw new NotFoundException('Source not found');
-    }
-    return this.sourceRepository.delete(source);
+    const result = await this.sourceRepository.delete(id);
+    return {
+      message: result?.affected
+        ? 'Source deleted successfully'
+        : 'Source not found',
+    };
   }
 }

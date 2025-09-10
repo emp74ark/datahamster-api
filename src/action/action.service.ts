@@ -26,6 +26,7 @@ export class ActionService {
   async findOne({ id, userId }: { id: string; userId: string }) {
     const action = await this.actionRepository.findOne({
       where: { id },
+      relations: { events: true },
     });
     if (!action) {
       throw new NotFoundException('Action not found');
@@ -54,12 +55,11 @@ export class ActionService {
   }
 
   async remove({ id, userId }: { id: string; userId: string }) {
-    const action = await this.actionRepository.findOne({
-      where: { id },
-    });
-    if (!action) {
-      throw new NotFoundException('Action not found');
-    }
-    return this.actionRepository.delete(action);
+    const result = await this.actionRepository.delete(id);
+    return {
+      message: result?.affected
+        ? 'Action deleted successfully'
+        : 'Action not found',
+    };
   }
 }
