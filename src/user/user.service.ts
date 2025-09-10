@@ -54,8 +54,8 @@ export class UserService {
     userId,
     role,
   }: {
-    id: number;
-    userId: number;
+    id: string;
+    userId: string;
     role: UserRole;
   }) {
     const user = await this.userRepository.findOneBy({ id });
@@ -76,9 +76,9 @@ export class UserService {
     userId,
     role,
   }: {
-    id: number;
+    id: string;
     dto: UpdateUserDto;
-    userId: number;
+    userId: string;
     role: UserRole;
   }) {
     const existing = await this.userRepository.findOneBy({ id });
@@ -107,8 +107,8 @@ export class UserService {
     userId,
     role,
   }: {
-    id: number;
-    userId: number;
+    id: string;
+    userId: string;
     role: UserRole;
   }) {
     const user = await this.userRepository.findOneBy({ id });

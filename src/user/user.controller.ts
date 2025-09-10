@@ -4,10 +4,8 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -41,8 +39,8 @@ export class UserController {
 
   @Get(':id')
   findOne(
-    @Param('id', ParseIntPipe) id: number,
-    @SessionUserId() userId: number,
+    @Param('id') id: string,
+    @SessionUserId() userId: string,
     @SessionRole() role: UserRole,
   ) {
     console.log(userId);
@@ -51,9 +49,9 @@ export class UserController {
 
   @Patch(':id')
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: string,
     @Body() dto: UpdateUserDto,
-    @SessionUserId() userId: number,
+    @SessionUserId() userId: string,
     @SessionRole() role: UserRole,
   ) {
     return this.userService.update({ id, dto, userId, role });
@@ -61,8 +59,8 @@ export class UserController {
 
   @Delete(':id')
   remove(
-    @Param('id', ParseIntPipe) id: number,
-    @SessionUserId() userId: number,
+    @Param('id') id: string,
+    @SessionUserId() userId: string,
     @SessionRole() role: UserRole,
   ) {
     return this.userService.remove({ id, userId, role });

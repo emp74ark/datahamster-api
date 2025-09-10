@@ -5,13 +5,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
 import { UserRole } from './user.enums';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ length: 50, nullable: false, unique: true })
   username: string;
@@ -36,6 +35,6 @@ export class User {
   @UpdateDateColumn({ type: 'timestamp with time zone' })
   updatedAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp with time zone' })
+  @Column({ default: new Date() })
   lastLogin: Date;
 }
