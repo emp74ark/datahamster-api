@@ -6,6 +6,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { SharedModule } from './shared/shared.module';
 import { AuthModule } from './auth/auth.module';
+import { ActionModule } from './action/action.module';
+import { EventModule } from './event/event.module';
+import { SourceModule } from './source/source.module';
 
 @Module({
   imports: [
@@ -27,6 +30,9 @@ import { AuthModule } from './auth/auth.module';
     UserModule,
     SharedModule,
     AuthModule,
+    ActionModule,
+    EventModule,
+    SourceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
