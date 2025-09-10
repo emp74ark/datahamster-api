@@ -19,12 +19,16 @@ export class SourceService {
   }
 
   findAll({ userId }: { userId: string }) {
-    return this.sourceRepository.find({ where: { user: { id: userId } } });
+    return this.sourceRepository.find({
+      where: { user: { id: userId } },
+      relations: { actions: true },
+    });
   }
 
   async findOne({ id, userId }: { id: string; userId: string }) {
     const source = await this.sourceRepository.findOne({
       where: { id },
+      relations: { actions: true },
     });
     if (!source) {
       throw new NotFoundException('Source not found');
@@ -48,7 +52,10 @@ export class SourceService {
       throw new NotFoundException('Source not found');
     }
     await this.sourceRepository.update({ id }, dto);
-    return this.sourceRepository.findOneBy({ id });
+    return this.sourceRepository.findOne({
+      where: { id },
+      relations: { actions: true },
+    });
   }
 
   async remove({ id, userId }: { id: string; userId: string }) {
