@@ -51,9 +51,9 @@ async function bootstrap() {
       store: sessionStore,
       cookie: {
         maxAge: TTL,
-        httpOnly: true,
-        sameSite: 'lax',
-        secure: isProd,
+        // httpOnly: true,
+        // sameSite: 'lax',
+        // secure: isProd,
       },
     }),
   );
