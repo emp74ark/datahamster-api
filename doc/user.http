@@ -1,4 +1,4 @@
-@userId = 514091f1-fe91-4e9d-be9d-9e381e74a534
+@userId = 3bfec8c6-92ea-4d06-b446-e5ea84bef569
 ### GET ALL USERS
 # @no-log
 GET {{backend}}/user
@@ -21,9 +21,9 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "username": "admin",
+  "username": "user1",
   "password": "password",
-  "role": "admin",
+  "role": "user",
   "email": "jazelle_greenzjb@enrolled.ulj"
 }
 
@@ -42,7 +42,7 @@ Content-Type: application/json
 
 ### CREATE USER
 # @no-log
-DELETE {{backend}}/user/8
+DELETE {{backend}}/user/{{userId}}
 Content-Type: application/json
 
 ###

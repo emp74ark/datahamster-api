@@ -16,6 +16,8 @@ import { AuthLoginDto } from './dto/auth-login.dto';
 import { AuthSignupDto } from './dto/auth-signup.dto';
 import { Request, Response } from 'express';
 import { SessionGuard } from './guards/session.guard';
+import { AuthSession } from './auth.types';
+import { User } from '../user/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -23,23 +25,21 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  async login(
-    @Body() dto: AuthLoginDto,
-    @Session() session: Record<string, unknown>,
-  ) {
+  async login(@Body() dto: AuthLoginDto, @Session() session: AuthSession) {
     const user = await this.authService.login({ dto });
-    session.user = user;
+    if (user) {
+      session.user = <Pick<User, 'id' | 'role'>>{ ...user };
+    }
     return user;
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('signup')
-  async signup(
-    @Body() dto: AuthSignupDto,
-    @Session() session: Record<string, unknown>,
-  ) {
+  async signup(@Body() dto: AuthSignupDto, @Session() session: AuthSession) {
     const user = await this.authService.signup({ dto });
-    session.user = user;
+    if (user) {
+      session.user = <Pick<User, 'id' | 'role'>>{ ...user };
+    }
     return user;
   }
 
@@ -51,7 +51,7 @@ export class AuthController {
         throw new InternalServerErrorException('Error logging out');
       }
     });
-    return res
+    res
       .clearCookie('connect.sid')
       .status(HttpStatus.OK)
       .json({ message: 'Successfully logged out' });

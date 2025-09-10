@@ -6,13 +6,14 @@ import {
   Param,
   Patch,
   Post,
+  Session,
   UseGuards,
 } from '@nestjs/common';
 import { SourceService } from './source.service';
 import { CreateSourceDto } from './dto/create-source.dto';
 import { UpdateSourceDto } from './dto/update-source.dto';
-import { SessionUserId } from '../auth/decorators/session-user.decorator';
 import { SessionGuard } from '../auth/guards/session.guard';
+import { AuthSession } from '../auth/auth.types';
 
 @UseGuards(SessionGuard)
 @Controller('source')
@@ -20,17 +21,23 @@ export class SourceController {
   constructor(private readonly sourceService: SourceService) {}
 
   @Post()
-  create(@Body() dto: CreateSourceDto, @SessionUserId() userId: string) {
+  create(
+    @Body() dto: CreateSourceDto,
+    @Session() { user: { id: userId, role } }: AuthSession,
+  ) {
     return this.sourceService.create({ userId, dto });
   }
 
   @Get()
-  findAll(@SessionUserId() userId: string) {
+  findAll(@Session() { user: { id: userId, role } }: AuthSession) {
     return this.sourceService.findAll({ userId });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @SessionUserId() userId: string) {
+  findOne(
+    @Param('id') id: string,
+    @Session() { user: { id: userId, role } }: AuthSession,
+  ) {
     return this.sourceService.findOne({ id, userId });
   }
 
@@ -38,13 +45,16 @@ export class SourceController {
   update(
     @Param('id') id: string,
     @Body() dto: UpdateSourceDto,
-    @SessionUserId() userId: string,
+    @Session() { user: { id: userId, role } }: AuthSession,
   ) {
     return this.sourceService.update({ id, userId, dto });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @SessionUserId() userId: string) {
+  remove(
+    @Param('id') id: string,
+    @Session() { user: { id: userId, role } }: AuthSession,
+  ) {
     return this.sourceService.remove({ id, userId });
   }
 }
