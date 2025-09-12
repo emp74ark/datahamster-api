@@ -55,6 +55,7 @@ async function bootstrap() {
         // sameSite: 'lax',
         // secure: isProd,
       },
+      name: configService.get<string>('COOKIE_NAME') || 'datahamster.id',
     }),
   );
 

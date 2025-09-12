@@ -17,10 +17,14 @@ import { AuthSignupDto } from './dto/auth-signup.dto';
 import { Request, Response } from 'express';
 import { SessionGuard } from './guards/session.guard';
 import { AuthSession } from './auth.types';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -52,7 +56,9 @@ export class AuthController {
         throw new InternalServerErrorException('Error logging out');
       }
       res
-        .clearCookie('connect.sid')
+        .clearCookie(
+          this.configService.get<string>('COOKIE_NAME') || 'datahamster.sid',
+        )
         .status(HttpStatus.OK)
         .json({ message: 'Successfully logged out' });
     });
