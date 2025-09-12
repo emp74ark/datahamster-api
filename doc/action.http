@@ -1,5 +1,5 @@
-@sourceId = e28e9c92-6366-40de-9569-3cec0caa6549
-@actionId = 0f72eab0-24f3-488b-a83d-44201b3d2b37
+@sourceId = d205acf3-acb0-46f8-972c-b68187653573
+@actionId = e74ab282-6130-4edb-ac7b-fbaf24f48939
 
 ### CREATE ACTION
 # @no-log
@@ -7,7 +7,7 @@ POST {{backend}}/action
 Content-Type: application/json
 
 {
-  "name": "signup",
+  "name": "test1",
   "sourceId": "{{sourceId}}"
 }
 

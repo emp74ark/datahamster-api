@@ -1,5 +1,6 @@
-@actionId = 0f72eab0-24f3-488b-a83d-44201b3d2b37
-@eventId = a6ced88c-b716-40ff-90d4-8956b07d0ef1
+@actionId = 908d82b0-bedd-4b04-8172-5200396cd92d
+@publicId = 52f165a3-9c91-409f-97c5-551ade830f3f
+@eventId = 908d82b0-bedd-4b04-8172-5200396cd92d
 
 ### CREATE EVENT
 # @no-log
@@ -45,5 +46,18 @@ Content-Type: application/json
 # @no-log
 DELETE {{backend}}/event/{{eventId}}
 Content-Type: application/json
+
+###
+
+### PUBLIC EVENT
+POST {{backend}}/public
+Content-Type: application/json
+
+{
+  "id": "{{publicId}}",
+  "data": { "page": "/home", "clicked": true },
+  "ip": "127.0.0.1",
+  "localTime": "2025-09-12T08:28:09.163Z"
+}
 
 ###
