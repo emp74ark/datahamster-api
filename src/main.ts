@@ -60,7 +60,7 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: true,
+    origin: [configService.get<string>('WEB_CLIENT')],
     credentials: true,
   });
 
