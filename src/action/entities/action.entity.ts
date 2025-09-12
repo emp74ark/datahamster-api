@@ -38,7 +38,9 @@ export class Action {
   })
   source: Source;
 
-  @OneToMany(() => Event, (event: Event) => event.action, {})
+  @OneToMany(() => Event, (event: Event) => event.action, {
+    eager: true,
+  })
   events: Event[];
 
   @CreateDateColumn({ type: 'timestamp without time zone' })
