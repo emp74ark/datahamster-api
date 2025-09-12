@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Generated,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -18,6 +19,10 @@ export class Action {
 
   @Column({ nullable: false })
   name: string;
+
+  @Column({ nullable: false })
+  @Generated('uuid')
+  publicId: string;
 
   @ManyToOne(() => User, (user: User) => user.actions, {
     nullable: false,

@@ -13,6 +13,7 @@ import { User } from './user/entities/user.entity';
 import { Source } from './source/entities/source.entity';
 import { Action } from './action/entities/action.entity';
 import { Event } from './event/entities/event.entity';
+import { PublicModule } from './public/public.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { Event } from './event/entities/event.entity';
     ActionModule,
     EventModule,
     SourceModule,
+    PublicModule,
   ],
   controllers: [AppController],
   providers: [AppService],
