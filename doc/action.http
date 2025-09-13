@@ -1,4 +1,4 @@
-@sourceId = d205acf3-acb0-46f8-972c-b68187653573
+@sourceId = 9b720430-7b34-48b6-80ad-77563f94c99a
 @actionId = e74ab282-6130-4edb-ac7b-fbaf24f48939
 
 ### CREATE ACTION
@@ -15,7 +15,7 @@ Content-Type: application/json
 
 ### LIST ACTIONS (current user)
 # @no-log
-GET {{backend}}/action
+GET {{backend}}/action?pageNumber=1&perPage=1&orderBy=createdAt&sortOrder=ASC
 Content-Type: application/json
 
 ###

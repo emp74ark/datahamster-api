@@ -6,15 +6,15 @@ POST {{backend}}/source
 Content-Type: application/json
 
 {
-  "title": "My Source",
-  "description": "Optional description"
+  "title": "DataHamster",
+  "description": "datahamster.online"
 }
 
 ###
 
 ### LIST SOURCES (current user)
 # @no-log
-GET {{backend}}/source
+GET {{backend}}/source?pageNumber=1&perPage=1&orderBy=createdAt&sortOrder=ASC
 Content-Type: application/json
 
 ###

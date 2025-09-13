@@ -5,13 +5,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Event } from './entities/event.entity';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { UserRole } from '../user/entities/user.enums';
+import { PaginationService } from '../shared/pagination/pagination.service';
+import { PaginationParams } from '../shared/pagination/paginataion.types';
 
 @Injectable()
-export class EventService {
+export class EventService extends PaginationService {
   constructor(
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
-  ) {}
+  ) {
+    super();
+  }
   create({ userId, dto }: { userId: string; dto: CreateEventDto }) {
     return this.eventRepository.save({
       ...dto,
@@ -20,10 +24,18 @@ export class EventService {
     });
   }
 
-  findAll({ userId, role }: { userId: string; role: UserRole }) {
+  findAll({
+    userId,
+    role,
+    filter,
+  }: {
+    userId: string;
+    role: UserRole;
+    filter: PaginationParams;
+  }) {
     const where: FindOptionsWhere<Event> =
       role === UserRole.USER ? { user: { id: userId } } : {};
-    return this.eventRepository.find({ where });
+    return this.paginateResults(this.eventRepository, where, filter);
   }
 
   async findOne({

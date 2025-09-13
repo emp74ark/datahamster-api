@@ -14,6 +14,8 @@ import { CreateSourceDto } from './dto/create-source.dto';
 import { UpdateSourceDto } from './dto/update-source.dto';
 import { SessionGuard } from '../auth/guards/session.guard';
 import { AuthSession } from '../auth/auth.types';
+import { Pagination } from '../shared/pagination/pagination.decorator';
+import { PaginationParams } from '../shared/pagination/paginataion.types';
 
 @UseGuards(SessionGuard)
 @Controller('source')
@@ -29,8 +31,11 @@ export class SourceController {
   }
 
   @Get()
-  findAll(@Session() { user: { id: userId, role } }: AuthSession) {
-    return this.sourceService.findAll({ userId, role });
+  findAll(
+    @Session() { user: { id: userId, role } }: AuthSession,
+    @Pagination() filter: PaginationParams,
+  ) {
+    return this.sourceService.findAll({ userId, role, filter });
   }
 
   @Get(':id')

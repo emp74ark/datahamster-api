@@ -1,5 +1,5 @@
 @actionId = 908d82b0-bedd-4b04-8172-5200396cd92d
-@publicId = 52f165a3-9c91-409f-97c5-551ade830f3f
+@publicId = 319c52bf-c3e0-4549-bc78-d4640d428d03
 @eventId = 908d82b0-bedd-4b04-8172-5200396cd92d
 
 ### CREATE EVENT
@@ -18,7 +18,7 @@ Content-Type: application/json
 
 ### LIST EVENTS (current user)
 # @no-log
-GET {{backend}}/event
+GET {{backend}}/event?pageNumber=1&perPage=2&orderBy=createdAt&sortOrder=DESC
 Content-Type: application/json
 
 ###

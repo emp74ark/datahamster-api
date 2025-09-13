@@ -5,13 +5,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Source } from './entities/source.entity';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { UserRole } from '../user/entities/user.enums';
+import { PaginationService } from '../shared/pagination/pagination.service';
+import { PaginationParams } from '../shared/pagination/paginataion.types';
 
 @Injectable()
-export class SourceService {
+export class SourceService extends PaginationService {
   constructor(
     @InjectRepository(Source)
     private readonly sourceRepository: Repository<Source>,
-  ) {}
+  ) {
+    super();
+  }
   create({ userId, dto }: { userId: string; dto: CreateSourceDto }) {
     return this.sourceRepository.save({
       ...dto,
@@ -19,12 +23,18 @@ export class SourceService {
     });
   }
 
-  findAll({ userId, role }: { userId: string; role: UserRole }) {
+  findAll({
+    userId,
+    role,
+    filter,
+  }: {
+    userId: string;
+    role: UserRole;
+    filter: PaginationParams;
+  }) {
     const where: FindOptionsWhere<Source> =
       role === UserRole.USER ? { user: { id: userId } } : {};
-    return this.sourceRepository.find({
-      where,
-    });
+    return this.paginateResults(this.sourceRepository, where, filter);
   }
 
   async findOne({

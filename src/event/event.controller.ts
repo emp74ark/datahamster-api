@@ -14,6 +14,8 @@ import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { SessionGuard } from '../auth/guards/session.guard';
 import { AuthSession } from '../auth/auth.types';
+import { Pagination } from '../shared/pagination/pagination.decorator';
+import { PaginationParams } from '../shared/pagination/paginataion.types';
 
 @UseGuards(SessionGuard)
 @Controller('event')
@@ -29,8 +31,11 @@ export class EventController {
   }
 
   @Get()
-  findAll(@Session() { user: { id: userId, role } }: AuthSession) {
-    return this.eventService.findAll({ userId, role });
+  findAll(
+    @Session() { user: { id: userId, role } }: AuthSession,
+    @Pagination() filter: PaginationParams,
+  ) {
+    return this.eventService.findAll({ userId, role, filter });
   }
 
   @Get(':id')

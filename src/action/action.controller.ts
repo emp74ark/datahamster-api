@@ -14,6 +14,8 @@ import { CreateActionDto } from './dto/create-action.dto';
 import { UpdateActionDto } from './dto/update-action.dto';
 import { SessionGuard } from '../auth/guards/session.guard';
 import { AuthSession } from '../auth/auth.types';
+import { Pagination } from '../shared/pagination/pagination.decorator';
+import { PaginationParams } from '../shared/pagination/paginataion.types';
 
 @UseGuards(SessionGuard)
 @Controller('action')
@@ -29,8 +31,11 @@ export class ActionController {
   }
 
   @Get()
-  findAll(@Session() { user: { id: userId, role } }: AuthSession) {
-    return this.actionService.findAll({ userId, role });
+  findAll(
+    @Session() { user: { id: userId, role } }: AuthSession,
+    @Pagination() filter: PaginationParams,
+  ) {
+    return this.actionService.findAll({ userId, role, filter });
   }
 
   @Get(':id')
