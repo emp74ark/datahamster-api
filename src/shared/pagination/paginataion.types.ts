@@ -7,7 +7,7 @@ export type PaginationParams = {
 
 export type Paginated<T> = {
   total: number;
-  result: T[];
+  results: T[];
 };
 
 export enum SortOrder {
