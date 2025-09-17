@@ -15,7 +15,11 @@ Content-Type: application/json
 
 ### LIST ACTIONS (current user)
 # @no-log
-GET {{backend}}/action?pageNumber=1&perPage=1&orderBy=createdAt&sortOrder=ASC
+GET {{backend}}/action
+    ?pageNumber=1
+    &perPage=100
+    &orderBy=createdAt
+    &sortOrder=ASC
 Content-Type: application/json
 
 ###

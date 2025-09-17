@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Session,
   UseGuards,
 } from '@nestjs/common';
@@ -33,9 +34,14 @@ export class EventController {
   @Get()
   findAll(
     @Session() { user: { id: userId, role } }: AuthSession,
-    @Pagination() filter: PaginationParams,
+    @Query('actionId') actionId: string | undefined,
+    @Pagination() paginationParams: PaginationParams,
   ) {
-    return this.eventService.findAll({ userId, role, filter });
+    return this.eventService.findAll({
+      userId,
+      role,
+      filter: { ...paginationParams, actionId },
+    });
   }
 
   @Get(':id')

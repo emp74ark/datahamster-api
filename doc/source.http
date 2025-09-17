@@ -14,7 +14,11 @@ Content-Type: application/json
 
 ### LIST SOURCES (current user)
 # @no-log
-GET {{backend}}/source?pageNumber=1&perPage=1&orderBy=createdAt&sortOrder=ASC
+GET {{backend}}/source
+    ?pageNumber=1
+    &perPage=100
+    &orderBy=createdAt
+    &sortOrder=ASC
 Content-Type: application/json
 
 ###

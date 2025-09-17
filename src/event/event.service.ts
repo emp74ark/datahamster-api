@@ -31,10 +31,12 @@ export class EventService extends PaginationService {
   }: {
     userId: string;
     role: UserRole;
-    filter: PaginationParams;
+    filter: PaginationParams & { actionId?: string };
   }) {
     const where: FindOptionsWhere<Event> =
-      role === UserRole.USER ? { user: { id: userId } } : {};
+      role === UserRole.USER
+        ? { user: { id: userId }, action: { id: filter.actionId } }
+        : { action: { id: filter.actionId } };
     return this.paginateResults(this.eventRepository, where, filter);
   }
 
