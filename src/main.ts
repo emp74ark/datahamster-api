@@ -51,15 +51,16 @@ async function bootstrap() {
       store: sessionStore,
       cookie: {
         maxAge: TTL,
-        httpOnly: true,
-        sameSite: 'lax',
-        secure: isProd,
+        // httpOnly: true,
+        // sameSite: 'lax',
+        // secure: isProd,
       },
+      name: configService.get<string>('COOKIE_NAME') || 'datahamster.id',
     }),
   );
 
   app.enableCors({
-    origin: true,
+    origin: [configService.get<string>('WEB_CLIENT')],
     credentials: true,
   });
 

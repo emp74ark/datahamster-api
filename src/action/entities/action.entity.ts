@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Generated,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -19,20 +20,26 @@ export class Action {
   @Column({ nullable: false })
   name: string;
 
+  @Column({ nullable: false })
+  @Generated('uuid')
+  publicId: string;
+
   @ManyToOne(() => User, (user: User) => user.actions, {
     nullable: false,
     onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
   })
   user: User;
 
   @ManyToOne(() => Source, (source: Source) => source.actions, {
     nullable: false,
     onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
   })
   source: Source;
 
   @OneToMany(() => Event, (event: Event) => event.action, {
-    cascade: false,
+    eager: true,
   })
   events: Event[];
 

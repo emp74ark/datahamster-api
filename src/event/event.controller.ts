@@ -6,13 +6,17 @@ import {
   Param,
   Patch,
   Post,
+  Query,
+  Session,
   UseGuards,
 } from '@nestjs/common';
 import { EventService } from './event.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
-import { SessionUserId } from '../auth/decorators/session-user.decorator';
 import { SessionGuard } from '../auth/guards/session.guard';
+import { AuthSession } from '../auth/auth.types';
+import { Pagination } from '../shared/pagination/pagination.decorator';
+import { PaginationParams } from '../shared/pagination/paginataion.types';
 
 @UseGuards(SessionGuard)
 @Controller('event')
@@ -20,31 +24,48 @@ export class EventController {
   constructor(private readonly eventService: EventService) {}
 
   @Post()
-  create(@Body() dto: CreateEventDto, @SessionUserId() userId: string) {
+  create(
+    @Body() dto: CreateEventDto,
+    @Session() { user: { id: userId } }: AuthSession,
+  ) {
     return this.eventService.create({ userId, dto });
   }
 
   @Get()
-  findAll(@SessionUserId() userId: string) {
-    return this.eventService.findAll({ userId });
+  findAll(
+    @Session() { user: { id: userId, role } }: AuthSession,
+    @Query('actionId') actionId: string | undefined,
+    @Pagination() paginationParams: PaginationParams,
+  ) {
+    return this.eventService.findAll({
+      userId,
+      role,
+      filter: { ...paginationParams, actionId },
+    });
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @SessionUserId() userId: string) {
-    return this.eventService.findOne({ id, userId });
+  findOne(
+    @Param('id') id: string,
+    @Session() { user: { id: userId, role } }: AuthSession,
+  ) {
+    return this.eventService.findOne({ id, userId, role });
   }
 
   @Patch(':id')
   update(
     @Param('id') id: string,
     @Body() dto: UpdateEventDto,
-    @SessionUserId() userId: string,
+    @Session() { user: { id: userId, role } }: AuthSession,
   ) {
-    return this.eventService.update({ id, userId, dto });
+    return this.eventService.update({ id, userId, role, dto });
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @SessionUserId() userId: string) {
-    return this.eventService.remove({ id, userId });
+  remove(
+    @Param('id') id: string,
+    @Session() { user: { id: userId, role } }: AuthSession,
+  ) {
+    return this.eventService.remove({ id, userId, role });
   }
 }

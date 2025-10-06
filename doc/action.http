@@ -1,5 +1,5 @@
-@sourceId = e28e9c92-6366-40de-9569-3cec0caa6549
-@actionId = 0f72eab0-24f3-488b-a83d-44201b3d2b37
+@sourceId = 9b720430-7b34-48b6-80ad-77563f94c99a
+@actionId = e74ab282-6130-4edb-ac7b-fbaf24f48939
 
 ### CREATE ACTION
 # @no-log
@@ -7,7 +7,7 @@ POST {{backend}}/action
 Content-Type: application/json
 
 {
-  "name": "signup",
+  "name": "test1",
   "sourceId": "{{sourceId}}"
 }
 
@@ -16,6 +16,10 @@ Content-Type: application/json
 ### LIST ACTIONS (current user)
 # @no-log
 GET {{backend}}/action
+    ?pageNumber=1
+    &perPage=100
+    &orderBy=createdAt
+    &sortOrder=ASC
 Content-Type: application/json
 
 ###

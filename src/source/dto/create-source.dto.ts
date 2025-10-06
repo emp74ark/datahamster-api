@@ -8,8 +8,4 @@ export class CreateSourceDto {
   @IsString()
   @IsOptional()
   description?: string;
-
-  @IsString()
-  @IsNotEmpty()
-  sourceId: string;
 }

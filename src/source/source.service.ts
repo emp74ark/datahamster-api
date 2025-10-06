@@ -3,14 +3,19 @@ import { CreateSourceDto } from './dto/create-source.dto';
 import { UpdateSourceDto } from './dto/update-source.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Source } from './entities/source.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
+import { UserRole } from '../user/entities/user.enums';
+import { PaginationService } from '../shared/pagination/pagination.service';
+import { PaginationParams } from '../shared/pagination/paginataion.types';
 
 @Injectable()
-export class SourceService {
+export class SourceService extends PaginationService {
   constructor(
     @InjectRepository(Source)
     private readonly sourceRepository: Repository<Source>,
-  ) {}
+  ) {
+    super();
+  }
   create({ userId, dto }: { userId: string; dto: CreateSourceDto }) {
     return this.sourceRepository.save({
       ...dto,
@@ -18,13 +23,33 @@ export class SourceService {
     });
   }
 
-  findAll({ userId }: { userId: string }) {
-    return this.sourceRepository.find({ where: { user: { id: userId } } });
+  findAll({
+    userId,
+    role,
+    filter,
+  }: {
+    userId: string;
+    role: UserRole;
+    filter: PaginationParams;
+  }) {
+    const where: FindOptionsWhere<Source> =
+      role === UserRole.USER ? { user: { id: userId } } : {};
+    return this.paginateResults(this.sourceRepository, where, filter);
   }
 
-  async findOne({ id, userId }: { id: string; userId: string }) {
+  async findOne({
+    id,
+    userId,
+    role,
+  }: {
+    id: string;
+    userId: string;
+    role: UserRole;
+  }) {
+    const where: FindOptionsWhere<Source> =
+      role === UserRole.USER ? { user: { id: userId }, id } : { id };
     const source = await this.sourceRepository.findOne({
-      where: { id },
+      where,
     });
     if (!source) {
       throw new NotFoundException('Source not found');
@@ -35,29 +60,44 @@ export class SourceService {
   async update({
     id,
     userId,
+    role,
     dto,
   }: {
     id: string;
     userId: string;
+    role: UserRole;
     dto: UpdateSourceDto;
   }) {
-    const source = await this.sourceRepository.findOne({
-      where: { id },
+    const where: FindOptionsWhere<Source> =
+      role === UserRole.USER ? { user: { id: userId }, id } : { id };
+    const existing = await this.sourceRepository.findOne({
+      where,
     });
-    if (!source) {
+    if (!existing) {
       throw new NotFoundException('Source not found');
     }
     await this.sourceRepository.update({ id }, dto);
-    return this.sourceRepository.findOneBy({ id });
+    return this.sourceRepository.findOne({
+      where,
+    });
   }
 
-  async remove({ id, userId }: { id: string; userId: string }) {
-    const source = await this.sourceRepository.findOne({
-      where: { id },
-    });
-    if (!source) {
-      throw new NotFoundException('Source not found');
-    }
-    return this.sourceRepository.delete(source);
+  async remove({
+    id,
+    userId,
+    role,
+  }: {
+    id: string;
+    userId: string;
+    role: UserRole;
+  }) {
+    const where: FindOptionsWhere<Source> =
+      role === UserRole.USER ? { user: { id: userId }, id } : { id };
+    const result = await this.sourceRepository.delete(where);
+    return {
+      message: result?.affected
+        ? 'Source deleted successfully'
+        : 'Source not found',
+    };
   }
 }

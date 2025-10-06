@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Session,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -15,8 +16,7 @@ import { SessionGuard } from '../auth/guards/session.guard';
 import { RoleGuard } from '../auth/guards/role.guard';
 import { RequiredRole } from '../auth/decorators/role.decorator';
 import { UserRole } from './entities/user.enums';
-import { SessionUserId } from '../auth/decorators/session-user.decorator';
-import { SessionRole } from '../auth/decorators/session-role.decorator';
+import { AuthSession } from '../auth/auth.types';
 
 @UseGuards(SessionGuard)
 @Controller('user')
@@ -40,10 +40,8 @@ export class UserController {
   @Get(':id')
   findOne(
     @Param('id') id: string,
-    @SessionUserId() userId: string,
-    @SessionRole() role: UserRole,
+    @Session() { user: { id: userId, role } }: AuthSession,
   ) {
-    console.log(userId);
     return this.userService.findOne({ id, userId, role });
   }
 
@@ -51,8 +49,7 @@ export class UserController {
   update(
     @Param('id') id: string,
     @Body() dto: UpdateUserDto,
-    @SessionUserId() userId: string,
-    @SessionRole() role: UserRole,
+    @Session() { user: { id: userId, role } }: AuthSession,
   ) {
     return this.userService.update({ id, dto, userId, role });
   }
@@ -60,8 +57,7 @@ export class UserController {
   @Delete(':id')
   remove(
     @Param('id') id: string,
-    @SessionUserId() userId: string,
-    @SessionRole() role: UserRole,
+    @Session() { user: { id: userId, role } }: AuthSession,
   ) {
     return this.userService.remove({ id, userId, role });
   }

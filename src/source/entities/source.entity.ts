@@ -9,7 +9,6 @@ import {
 } from 'typeorm';
 import { Action } from '../../action/entities/action.entity';
 import { User } from '../../user/entities/user.entity';
-import { Event } from '../../event/entities/event.entity';
 
 @Entity()
 export class Source {
@@ -25,11 +24,12 @@ export class Source {
   @ManyToOne(() => User, (user: User) => user.sources, {
     nullable: false,
     onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
   })
   user: User;
 
   @OneToMany(() => Action, (action: Action) => action.source, {
-    cascade: false,
+    eager: true,
   })
   actions: Action[];
 

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -11,6 +12,7 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as argon from 'argon2';
 import { UserRole } from './entities/user.enums';
+import { userPublicFields } from './entities/user.constants';
 
 @Injectable()
 export class UserService {
@@ -29,23 +31,24 @@ export class UserService {
       throw new BadRequestException('User already exists');
     }
 
-    const created = await this.userRepository.save({
+    const { id } = await this.userRepository.save({
       ...dto,
       password: hash,
     });
 
-    if (!created) {
+    if (!id) {
       throw new InternalServerErrorException('User not created');
     }
 
-    Reflect.deleteProperty(created, 'password');
-
-    return this.userRepository.findOneBy({ id: created.id });
+    return this.userRepository.findOne({
+      where: { id },
+      select: userPublicFields,
+    });
   }
 
   findAll() {
     return this.userRepository.find({
-      select: ['id', 'username', 'email', 'role'],
+      select: userPublicFields,
     });
   }
 
@@ -58,15 +61,16 @@ export class UserService {
     userId: string;
     role: UserRole;
   }) {
-    const user = await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: userPublicFields,
+    });
     if (!user) {
-      throw new BadRequestException('User not found');
+      throw new NotFoundException('User not found');
     }
     if (role === UserRole.USER && id !== userId) {
       throw new UnauthorizedException('Unauthorized');
     }
-
-    Reflect.deleteProperty(user, 'password');
     return user;
   }
 
@@ -83,25 +87,20 @@ export class UserService {
   }) {
     const existing = await this.userRepository.findOneBy({ id });
     if (!existing) {
-      throw new BadRequestException('User not found');
+      throw new NotFoundException('User not found');
     }
     if (role === UserRole.USER && id !== userId) {
       throw new UnauthorizedException('Unauthorized');
     }
-    const payload: Omit<Partial<User>, 'sources' | 'actions' | 'events'> = {
-      ...dto,
-    };
-    Reflect.deleteProperty(payload, 'role');
+    const payload: Omit<Partial<User>, 'role'> = { ...dto };
     if (dto.password) {
       payload.password = await argon.hash(dto.password);
     }
     await this.userRepository.update(id, payload);
-    const user = await this.userRepository.findOneBy({ id });
-    if (!user) {
-      throw new InternalServerErrorException('User update failedL');
-    }
-    Reflect.deleteProperty(user, 'password');
-    return user;
+    return this.userRepository.findOne({
+      where: { id },
+      select: userPublicFields,
+    });
   }
 
   async remove({
@@ -113,13 +112,14 @@ export class UserService {
     userId: string;
     role: UserRole;
   }) {
-    const user = await this.userRepository.findOneBy({ id });
-    if (!user) {
-      throw new BadRequestException('User not found');
-    }
     if (role === UserRole.USER && id !== userId) {
       throw new UnauthorizedException('Unauthorized');
     }
-    return this.userRepository.delete(user);
+    const result = await this.userRepository.delete(id);
+    return {
+      message: result?.affected
+        ? 'User deleted successfully'
+        : 'User not found',
+    };
   }
 }

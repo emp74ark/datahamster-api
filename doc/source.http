@@ -1,4 +1,4 @@
-@sourceId = 0b243493-277b-4c35-8f10-e3ec133d5764
+@sourceId = d205acf3-acb0-46f8-972c-b68187653573
 
 ### CREATE SOURCE
 # @no-log
@@ -6,8 +6,8 @@ POST {{backend}}/source
 Content-Type: application/json
 
 {
-  "title": "My Source",
-  "description": "Optional description"
+  "title": "DataHamster",
+  "description": "datahamster.online"
 }
 
 ###
@@ -15,6 +15,10 @@ Content-Type: application/json
 ### LIST SOURCES (current user)
 # @no-log
 GET {{backend}}/source
+    ?pageNumber=1
+    &perPage=100
+    &orderBy=createdAt
+    &sortOrder=ASC
 Content-Type: application/json
 
 ###

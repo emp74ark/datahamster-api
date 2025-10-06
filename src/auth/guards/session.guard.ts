@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { User } from '../../user/entities/user.entity';
+import { AuthSession } from '../auth.types';
 
 @Injectable()
 export class SessionGuard implements CanActivate {
@@ -9,7 +9,7 @@ export class SessionGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const { session } = context
       .switchToHttp()
-      .getRequest<{ session: { user?: User } }>();
-    return !!session.user;
+      .getRequest<{ session: AuthSession | undefined }>();
+    return Boolean(session && session.user);
   }
 }

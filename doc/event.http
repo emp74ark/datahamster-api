@@ -1,5 +1,6 @@
-@actionId = 0f72eab0-24f3-488b-a83d-44201b3d2b37
-@eventId = a6ced88c-b716-40ff-90d4-8956b07d0ef1
+@actionId = 69099440-dccd-407f-a397-c6b037efbf01
+@publicId = 319c52bf-c3e0-4549-bc78-d4640d428d03
+@eventId = 908d82b0-bedd-4b04-8172-5200396cd92d
 
 ### CREATE EVENT
 # @no-log
@@ -18,6 +19,11 @@ Content-Type: application/json
 ### LIST EVENTS (current user)
 # @no-log
 GET {{backend}}/event
+    ?pageNumber=1
+    &perPage=5
+    &orderBy=createdAt
+    &sortOrder=DESC
+    &actionId={{actionId}}
 Content-Type: application/json
 
 ###
@@ -45,5 +51,18 @@ Content-Type: application/json
 # @no-log
 DELETE {{backend}}/event/{{eventId}}
 Content-Type: application/json
+
+###
+
+### PUBLIC EVENT
+POST {{backend}}/public
+Content-Type: application/json
+
+{
+  "id": "{{publicId}}",
+  "data": { "page": "/home", "clicked": true },
+  "ip": "127.0.0.1",
+  "localTime": "2025-09-12T08:28:09.163Z"
+}
 
 ###

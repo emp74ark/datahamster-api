@@ -16,30 +16,35 @@ import { AuthLoginDto } from './dto/auth-login.dto';
 import { AuthSignupDto } from './dto/auth-signup.dto';
 import { Request, Response } from 'express';
 import { SessionGuard } from './guards/session.guard';
+import { AuthSession } from './auth.types';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  async login(
-    @Body() dto: AuthLoginDto,
-    @Session() session: Record<string, unknown>,
-  ) {
+  async login(@Body() dto: AuthLoginDto, @Session() session: AuthSession) {
     const user = await this.authService.login({ dto });
-    session.user = user;
+    if (user) {
+      const { id, role } = user;
+      session.user = { id, role };
+    }
     return user;
   }
 
   @HttpCode(HttpStatus.OK)
   @Post('signup')
-  async signup(
-    @Body() dto: AuthSignupDto,
-    @Session() session: Record<string, unknown>,
-  ) {
+  async signup(@Body() dto: AuthSignupDto, @Session() session: AuthSession) {
     const user = await this.authService.signup({ dto });
-    session.user = user;
+    if (user) {
+      const { id, role } = user;
+      session.user = { id, role };
+    }
     return user;
   }
 
@@ -50,10 +55,12 @@ export class AuthController {
       if (err) {
         throw new InternalServerErrorException('Error logging out');
       }
+      res
+        .clearCookie(
+          this.configService.get<string>('COOKIE_NAME') || 'datahamster.sid',
+        )
+        .status(HttpStatus.OK)
+        .json({ message: 'Successfully logged out' });
     });
-    return res
-      .clearCookie('connect.sid')
-      .status(HttpStatus.OK)
-      .json({ message: 'Successfully logged out' });
   }
 }
