@@ -4,6 +4,8 @@ WORKDIR /app
 COPY package*.json .
 RUN pnpm install
 COPY . .
+RUN echo DEBUG
+RUN cat .env
 RUN pnpm run build
 
 FROM node:22-slim
@@ -13,6 +15,8 @@ COPY package*.json .
 RUN pnpm install --prod
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/.env /
+RUN echo DEBUG
+RUN cat .env
 EXPOSE 3700
 ENV NODE_ENV=production
 CMD ["node", "dist/main.js"]
