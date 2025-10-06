@@ -14,7 +14,7 @@ WORKDIR /app
 COPY package*.json .
 RUN pnpm install --prod
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/.env /
+COPY --from=builder /app/.env ./
 RUN echo DEBUG
 RUN cat .env
 EXPOSE 3700
