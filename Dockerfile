@@ -12,6 +12,7 @@ WORKDIR /app
 COPY package*.json .
 RUN pnpm install --prod
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app .env
 EXPOSE 3700
 ENV NODE_ENV=production
 CMD ["node", "dist/main.js"]
