@@ -38,6 +38,10 @@ export class ActionService extends PaginationService {
     return this.paginateResults(this.actionRepository, where, filter);
   }
 
+  find() {
+    return this.actionRepository.find();
+  }
+
   async findOne({
     id,
     userId,

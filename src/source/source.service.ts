@@ -37,6 +37,10 @@ export class SourceService extends PaginationService {
     return this.paginateResults(this.sourceRepository, where, filter);
   }
 
+  find() {
+    return this.sourceRepository.find();
+  }
+
   async findOne({
     id,
     userId,

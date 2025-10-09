@@ -1,0 +1,62 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Action {
+  """Action creation date"""
+  createdAt: DateTime!
+
+  """Action ID"""
+  id: String!
+
+  """Action name"""
+  name: String!
+
+  """Public action ID"""
+  publicId: String!
+
+  """Action update date"""
+  updatedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Event {
+  """Event creation date"""
+  createdAt: DateTime!
+
+  """Event ID"""
+  id: String!
+
+  """Event IP"""
+  ip: String!
+
+  """Event timestamp"""
+  localTime: DateTime!
+}
+
+type Query {
+  actions: [Action!]!
+  events: [Event!]!
+  sources: [Source!]!
+}
+
+type Source {
+  """Source creation date"""
+  createdAt: DateTime!
+
+  """Source description"""
+  description: String!
+
+  """Source ID"""
+  id: String!
+
+  """Source title"""
+  title: String!
+
+  """Source update date"""
+  updatedAt: DateTime!
+}

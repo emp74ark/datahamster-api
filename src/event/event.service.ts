@@ -40,6 +40,10 @@ export class EventService extends PaginationService {
     return this.paginateResults(this.eventRepository, where, filter);
   }
 
+  find() {
+    return this.eventRepository.find();
+  }
+
   async findOne({
     id,
     userId,
