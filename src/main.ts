@@ -6,6 +6,7 @@ import { Pool } from 'pg';
 import * as connectPgSimple from 'connect-pg-simple';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +21,15 @@ async function bootstrap() {
       transformOptions: { enableImplicitConversion: true },
     }),
   );
+
+  const config = new DocumentBuilder()
+    .setTitle('DH API')
+    .setDescription('The DataHamster API')
+    .setVersion('1.0')
+    .addCookieAuth()
+    .build();
+  const documentFactory = () => SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, documentFactory);
 
   const configService = app.get(ConfigService);
 
@@ -65,4 +75,4 @@ async function bootstrap() {
 
   await app.listen(PORT);
 }
-bootstrap();
+bootstrap().catch((err) => console.error(err));

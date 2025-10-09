@@ -19,7 +19,9 @@ import { SessionGuard } from './guards/session.guard';
 import { AuthSession } from './auth.types';
 import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -27,6 +29,7 @@ export class AuthController {
     private readonly configService: ConfigService,
   ) {}
 
+  @ApiOperation({ summary: 'Login' })
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @Throttle({ default: { limit: 5, ttl: 60000 } })
@@ -39,6 +42,7 @@ export class AuthController {
     return user;
   }
 
+  @ApiOperation({ summary: 'Signup' })
   @HttpCode(HttpStatus.OK)
   @Post('signup')
   @Throttle({ default: { limit: 1, ttl: 60000 } })
@@ -51,6 +55,7 @@ export class AuthController {
     return user;
   }
 
+  @ApiOperation({ summary: 'Logout' })
   @UseGuards(SessionGuard)
   @Get('logout')
   logout(@Req() req: Request, @Res() res: Response) {

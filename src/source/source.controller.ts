@@ -16,12 +16,15 @@ import { SessionGuard } from '../auth/guards/session.guard';
 import { AuthSession } from '../auth/auth.types';
 import { Pagination } from '../shared/pagination/pagination.decorator';
 import { PaginationParams } from '../shared/pagination/paginataion.types';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Sources')
 @UseGuards(SessionGuard)
 @Controller('source')
 export class SourceController {
   constructor(private readonly sourceService: SourceService) {}
 
+  @ApiOperation({ summary: 'Create a source' })
   @Post()
   create(
     @Body() dto: CreateSourceDto,
@@ -30,6 +33,7 @@ export class SourceController {
     return this.sourceService.create({ userId, dto });
   }
 
+  @ApiOperation({ summary: 'Get all sources' })
   @Get()
   findAll(
     @Session() { user: { id: userId, role } }: AuthSession,
@@ -38,6 +42,7 @@ export class SourceController {
     return this.sourceService.findAll({ userId, role, filter });
   }
 
+  @ApiOperation({ summary: 'Get a source by id' })
   @Get(':id')
   findOne(
     @Param('id') id: string,
@@ -46,6 +51,7 @@ export class SourceController {
     return this.sourceService.findOne({ id, userId, role });
   }
 
+  @ApiOperation({ summary: 'Update a source' })
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -55,6 +61,7 @@ export class SourceController {
     return this.sourceService.update({ id, userId, role, dto });
   }
 
+  @ApiOperation({ summary: 'Delete a source' })
   @Delete(':id')
   remove(
     @Param('id') id: string,
