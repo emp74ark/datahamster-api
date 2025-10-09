@@ -1,6 +1,6 @@
 export type PaginationParams = {
-  pageNumber: number;
-  perPage: number;
+  pageNumber?: number;
+  perPage?: number;
   sortBy?: string;
   sortOrder?: SortOrder;
 };

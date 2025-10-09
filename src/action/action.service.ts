@@ -27,24 +27,20 @@ export class ActionService extends PaginationService {
   findAll({
     userId,
     role,
+    sourceId,
     filter,
   }: {
     userId: string;
     role: UserRole;
+    sourceId?: string;
     filter: PaginationParams;
   }) {
     const where: FindOptionsWhere<Action> =
       role === UserRole.USER ? { user: { id: userId } } : {};
-    return this.paginateResults(this.actionRepository, where, filter);
-  }
-
-  find({ sourceId }: { sourceId?: string }) {
     if (sourceId) {
-      return this.actionRepository.find({
-        where: { source: { id: sourceId } },
-      });
+      where.source = { id: sourceId };
     }
-    return this.actionRepository.find();
+    return this.paginateResults(this.actionRepository, where, filter);
   }
 
   async findOne({
@@ -66,10 +62,6 @@ export class ActionService extends PaginationService {
       throw new NotFoundException('Action not found');
     }
     return action;
-  }
-
-  one(id: string) {
-    return this.actionRepository.findOne({ where: { id } });
   }
 
   async update({

@@ -2,9 +2,12 @@ import { Args, Query, Resolver } from '@nestjs/graphql';
 import { SourceService } from './source.service';
 import { SkipThrottle } from '@nestjs/throttler';
 import { Source } from './entities/source.entity';
+import { UseGuards } from '@nestjs/common';
+import { SessionGuard } from '../auth/guards/session.guard';
 
 @Resolver(() => Source)
 @SkipThrottle()
+@UseGuards(SessionGuard)
 export class SourceResolver {
   constructor(private readonly sourceService: SourceService) {}
 
