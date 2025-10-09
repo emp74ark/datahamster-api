@@ -9,16 +9,21 @@ import {
 } from 'typeorm';
 import { Action } from '../../action/entities/action.entity';
 import { User } from '../../user/entities/user.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @Entity()
+@ObjectType()
 export class Source {
   @PrimaryGeneratedColumn('uuid')
+  @Field(() => String, { description: 'Source ID' })
   id: string;
 
   @Column({ length: 150, nullable: false })
+  @Field(() => String, { description: 'Source title' })
   title: string;
 
   @Column({ length: 5000 })
+  @Field(() => String, { description: 'Source description' })
   description?: string;
 
   @ManyToOne(() => User, (user: User) => user.sources, {
@@ -34,8 +39,10 @@ export class Source {
   actions: Action[];
 
   @CreateDateColumn({ type: 'timestamp without time zone' })
+  @Field(() => Date, { description: 'Source creation date' })
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp without time zone' })
+  @Field(() => Date, { description: 'Source update date' })
   updatedAt: Date;
 }

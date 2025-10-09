@@ -7,16 +7,21 @@ import {
 } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
 import { Action } from '../../action/entities/action.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @Entity()
+@ObjectType()
 export class Event {
   @PrimaryGeneratedColumn('uuid')
+  @Field(() => String, { description: 'Event ID' })
   id: string;
 
   @Column({ type: 'timestamp' })
+  @Field(() => Date, { description: 'Event timestamp' })
   localTime: Date;
 
   @Column()
+  @Field(() => String, { description: 'Event IP' })
   ip: string;
 
   @Column({ type: 'simple-json' })
@@ -37,5 +42,6 @@ export class Event {
   action: Action;
 
   @CreateDateColumn({ type: 'timestamp without time zone' })
+  @Field(() => Date, { description: 'Event creation date' })
   createdAt: Date;
 }

@@ -11,17 +11,22 @@ import {
 import { User } from '../../user/entities/user.entity';
 import { Source } from '../../source/entities/source.entity';
 import { Event } from '../../event/entities/event.entity';
+import { Field, ObjectType } from '@nestjs/graphql';
 
 @Entity()
+@ObjectType()
 export class Action {
   @PrimaryGeneratedColumn('uuid')
+  @Field(() => String, { description: 'Action ID' })
   id: string;
 
   @Column({ nullable: false })
+  @Field(() => String, { description: 'Action name' })
   name: string;
 
   @Column({ nullable: false })
   @Generated('uuid')
+  @Field(() => String, { description: 'Public action ID' })
   publicId: string;
 
   @ManyToOne(() => User, (user: User) => user.actions, {
@@ -44,8 +49,10 @@ export class Action {
   events: Event[];
 
   @CreateDateColumn({ type: 'timestamp without time zone' })
+  @Field(() => Date, { description: 'Action creation date' })
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp without time zone' })
+  @Field(() => Date, { description: 'Action update date' })
   updatedAt: Date;
 }
