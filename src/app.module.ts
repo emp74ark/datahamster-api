@@ -15,6 +15,8 @@ import { Action } from './action/entities/action.entity';
 import { Event } from './event/entities/event.entity';
 import { PublicModule } from './public/public.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
 @Module({
   imports: [
@@ -40,6 +42,12 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
           limit: 100,
         },
       ],
+    }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: 'schema.graphql',
+      playground: false,
+      sortSchema: true,
     }),
     UserModule,
     SharedModule,
