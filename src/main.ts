@@ -5,6 +5,7 @@ import * as session from 'express-session';
 import { Pool } from 'pg';
 import * as connectPgSimple from 'connect-pg-simple';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,7 +24,6 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   const PORT = configService.get<number>('PORT') || 3700;
-  const isProd = process.env.NODE_ENV === 'production';
 
   const TTL = 1000 * 60 * 60 * 24;
 
@@ -51,13 +51,12 @@ async function bootstrap() {
       store: sessionStore,
       cookie: {
         maxAge: TTL,
-        // httpOnly: true,
-        // sameSite: 'lax',
-        // secure: isProd,
       },
       name: configService.get<string>('COOKIE_NAME') || 'datahamster.id',
     }),
   );
+
+  app.use(helmet());
 
   app.enableCors({
     origin: [configService.get<string>('WEB_CLIENT')],
