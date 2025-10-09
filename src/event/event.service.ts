@@ -40,7 +40,12 @@ export class EventService extends PaginationService {
     return this.paginateResults(this.eventRepository, where, filter);
   }
 
-  find() {
+  find({ actionId }: { actionId?: string }) {
+    if (actionId) {
+      return this.eventRepository.find({
+        where: { action: { id: actionId } },
+      });
+    }
     return this.eventRepository.find();
   }
 
@@ -62,6 +67,10 @@ export class EventService extends PaginationService {
       throw new NotFoundException('Event not found');
     }
     return event;
+  }
+
+  one({ id }: { id: string }) {
+    return this.eventRepository.findOne({ where: { id } });
   }
 
   async update({

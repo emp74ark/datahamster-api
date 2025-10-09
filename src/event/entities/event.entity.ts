@@ -8,6 +8,7 @@ import {
 import { User } from '../../user/entities/user.entity';
 import { Action } from '../../action/entities/action.entity';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { GraphQLJSONObject } from 'graphql-type-json';
 
 @Entity()
 @ObjectType()
@@ -25,6 +26,7 @@ export class Event {
   ip: string;
 
   @Column({ type: 'simple-json' })
+  @Field(() => GraphQLJSONObject, { nullable: true, description: 'Event data' })
   data?: Record<string, string | number | boolean>;
 
   @ManyToOne(() => User, (user: User) => user.events, {

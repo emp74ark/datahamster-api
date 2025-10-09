@@ -38,7 +38,12 @@ export class ActionService extends PaginationService {
     return this.paginateResults(this.actionRepository, where, filter);
   }
 
-  find() {
+  find({ sourceId }: { sourceId?: string }) {
+    if (sourceId) {
+      return this.actionRepository.find({
+        where: { source: { id: sourceId } },
+      });
+    }
     return this.actionRepository.find();
   }
 
@@ -61,6 +66,10 @@ export class ActionService extends PaginationService {
       throw new NotFoundException('Action not found');
     }
     return action;
+  }
+
+  one(id: string) {
+    return this.actionRepository.findOne({ where: { id } });
   }
 
   async update({

@@ -17,6 +17,7 @@ import { PublicModule } from './public/public.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { GraphQLJSONObject } from 'graphql-type-json';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
       autoSchemaFile: 'schema.graphql',
       playground: false,
       sortSchema: true,
+      resolvers: { JSONObject: GraphQLJSONObject },
     }),
     UserModule,
     SharedModule,

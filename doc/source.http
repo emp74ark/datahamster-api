@@ -6,8 +6,8 @@ POST {{backend}}/source
 Content-Type: application/json
 
 {
-  "title": "DataHamster",
-  "description": "datahamster.online"
+  "title": "Test",
+  "description": "Test description"
 }
 
 ###

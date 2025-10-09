@@ -61,6 +61,10 @@ export class SourceService extends PaginationService {
     return source;
   }
 
+  one(id: string) {
+    return this.sourceRepository.findOne({ where: { id } });
+  }
+
   async update({
     id,
     userId,

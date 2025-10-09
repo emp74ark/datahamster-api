@@ -1,0 +1,77 @@
+### SOURCES
+# @no-log
+GRAPHQL {{graphql}}
+
+{
+    sources {
+        id,
+        title,
+        actions {
+            id,
+            name,
+            events {
+                id,
+                localTime,
+                ip,
+                data,
+                createdAt
+            }
+        }
+    }
+}
+
+###
+
+### SOURCE
+# @no-log
+GRAPHQL {{graphql}}
+
+{
+    source(id: "dfd5b1a0-8b90-4543-bace-b8fe02eb88a2") {
+        id,
+        title
+    }
+}
+
+###
+
+### ACTIONS
+# @no-log
+GRAPHQL {{graphql}}
+
+{
+    actions {
+        id,
+        name
+    }
+}
+
+###
+
+### ACTION
+# @no-log
+GRAPHQL {{graphql}}
+
+{
+    action(id: "4d4f030a-f60a-4bf9-aa47-9229c0e95622") {
+        id,
+        name
+    }
+}
+
+###
+
+### EVENTS
+# @no-log
+GRAPHQL {{graphql}}
+
+{
+    events {
+        id,
+        localTime,
+        ip,
+        createdAt
+    }
+}
+
+###

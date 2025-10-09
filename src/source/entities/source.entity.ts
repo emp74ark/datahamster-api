@@ -36,6 +36,10 @@ export class Source {
   @OneToMany(() => Action, (action: Action) => action.source, {
     eager: true,
   })
+  @Field(() => [Action], {
+    nullable: true,
+    description: 'Source actions',
+  })
   actions: Action[];
 
   @CreateDateColumn({ type: 'timestamp without time zone' })
