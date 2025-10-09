@@ -14,6 +14,7 @@ import { Source } from './source/entities/source.entity';
 import { Action } from './action/entities/action.entity';
 import { Event } from './event/entities/event.entity';
 import { PublicModule } from './public/public.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -32,6 +33,14 @@ import { PublicModule } from './public/public.module';
       }),
       inject: [ConfigService],
     }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 60000,
+          limit: 100,
+        },
+      ],
+    }),
     UserModule,
     SharedModule,
     AuthModule,
@@ -41,6 +50,12 @@ import { PublicModule } from './public/public.module';
     PublicModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: 'APP_GUARD',
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

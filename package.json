@@ -28,6 +28,7 @@
     "@nestjs/core": "^11.0.1",
     "@nestjs/mapped-types": "^2.1.0",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/throttler": "^6.4.0",
     "@nestjs/typeorm": "^11.0.0",
     "@types/connect-pg-simple": "^7.0.3",
     "argon2": "^0.44.0",
