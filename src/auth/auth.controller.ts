@@ -35,9 +35,7 @@ export class AuthController {
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   async login(@Body() dto: AuthLoginDto, @Session() session: AuthSession) {
     const user = await this.authService.login({ dto });
-    console.debug('CONTROLLER_USER', user);
     if (user) {
-      console.debug('CONTROLLER_ADD_TO_SESSION', user);
       const { id, role } = user;
       session.user = { id, role };
     }
