@@ -29,12 +29,15 @@ export class AuthService {
     }
 
     const pwdIsMatch = await argon.verify(user.password, password);
+    console.debug('SERVICE_PWD_IS_MATCH', pwdIsMatch);
 
     if (!pwdIsMatch) {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    await this.userRepository.update(user.id, { lastLogin: new Date() });
+    console.debug('SERVICE_UPDATE_LAST_LOGIN', user);
+    const result = await this.userRepository.update(user.id, { lastLogin: new Date() });
+    console.debug('SERVICE_UPDATE_LAST_LOGIN_RESULT', result);
 
     return this.userRepository.findOne({
       where: { username },
