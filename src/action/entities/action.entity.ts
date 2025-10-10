@@ -12,6 +12,7 @@ import { User } from '../../user/entities/user.entity';
 import { Source } from '../../source/entities/source.entity';
 import { Event } from '../../event/entities/event.entity';
 import { Field, ObjectType } from '@nestjs/graphql';
+import { PaginatedResults } from '../../shared/pagination/pagination.gql';
 
 @Entity()
 @ObjectType()
@@ -57,3 +58,6 @@ export class Action {
   @Field(() => Date, { description: 'Action update date' })
   updatedAt: Date;
 }
+
+@ObjectType()
+export class PaginatedActions extends PaginatedResults(Action) {}

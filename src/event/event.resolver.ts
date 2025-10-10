@@ -1,12 +1,13 @@
 import { Args, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { SkipThrottle } from '@nestjs/throttler';
 import { EventService } from './event.service';
-import { Event } from './entities/event.entity';
+import { Event, PaginatedEvents } from './entities/event.entity';
 import { Action } from '../action/entities/action.entity';
 import { UseGuards } from '@nestjs/common';
 import { SessionGuard } from '../auth/guards/session.guard';
 import { ActiveUser } from '../auth/decorators/active-user.decorator';
 import { User } from '../user/entities/user.entity';
+import { PaginationInput } from '../shared/pagination/pagination.input';
 
 @Resolver(() => Event)
 @SkipThrottle()
@@ -14,14 +15,19 @@ import { User } from '../user/entities/user.entity';
 @UseGuards(SessionGuard)
 export class EventResolver {
   constructor(private readonly eventService: EventService) {}
-  @Query(() => [Event])
-  async events(@ActiveUser() user: User) {
-    const sources = await this.eventService.findAll({
+  @Query(() => PaginatedEvents)
+  async events(
+    @Args('pagination')
+    pagination: PaginationInput,
+    @ActiveUser() user: User,
+  ) {
+    return this.eventService.findAll({
       userId: user.id,
       role: user.role,
-      filter: {},
+      filter: {
+        ...pagination,
+      },
     });
-    return sources.results;
   }
 
   @Query(() => Event)
@@ -31,12 +37,12 @@ export class EventResolver {
 
   @ResolveField(() => [Event], { name: 'events' })
   async eventsFromParent(@Parent() action: Action, @ActiveUser() user: User) {
-    const sources = await this.eventService.findAll({
+    const { results } = await this.eventService.findAll({
       userId: user.id,
       role: user.role,
       actionId: action.id,
       filter: {},
     });
-    return sources.results;
+    return results;
   }
 }

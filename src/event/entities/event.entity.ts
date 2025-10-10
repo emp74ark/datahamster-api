@@ -9,6 +9,7 @@ import { User } from '../../user/entities/user.entity';
 import { Action } from '../../action/entities/action.entity';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { GraphQLJSONObject } from 'graphql-type-json';
+import { PaginatedResults } from '../../shared/pagination/pagination.gql';
 
 @Entity()
 @ObjectType()
@@ -47,3 +48,6 @@ export class Event {
   @Field(() => Date, { description: 'Event creation date' })
   createdAt: Date;
 }
+
+@ObjectType()
+export class PaginatedEvents extends PaginatedResults(Event) {}

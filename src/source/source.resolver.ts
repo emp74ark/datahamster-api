@@ -1,11 +1,12 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { SourceService } from './source.service';
 import { SkipThrottle } from '@nestjs/throttler';
-import { Source } from './entities/source.entity';
+import { PaginatedSources, Source } from './entities/source.entity';
 import { UseGuards } from '@nestjs/common';
 import { SessionGuard } from '../auth/guards/session.guard';
 import { ActiveUser } from '../auth/decorators/active-user.decorator';
 import { User } from '../user/entities/user.entity';
+import { PaginationInput } from '../shared/pagination/pagination.input';
 
 @Resolver(() => Source)
 @SkipThrottle()
@@ -13,14 +14,20 @@ import { User } from '../user/entities/user.entity';
 export class SourceResolver {
   constructor(private readonly sourceService: SourceService) {}
 
-  @Query(() => [Source])
-  async sources(@ActiveUser() user: User) {
-    const sources = await this.sourceService.findAll({
+  @Query(() => PaginatedSources)
+  async sources(
+    @Args('pagination')
+    pagination: PaginationInput,
+    @ActiveUser() user: User,
+  ) {
+    console.log('pagination', pagination);
+    return this.sourceService.findAll({
       userId: user.id,
       role: user.role,
-      filter: {},
+      filter: {
+        ...pagination,
+      },
     });
-    return sources.results;
   }
 
   @Query(() => Source)

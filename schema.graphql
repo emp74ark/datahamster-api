@@ -52,13 +52,42 @@ The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](
 """
 scalar JSONObject
 
+type PaginatedActions {
+  results: [Action!]
+  total: Int!
+}
+
+type PaginatedEvents {
+  results: [Event!]
+  total: Int!
+}
+
+type PaginatedSources {
+  results: [Source!]
+  total: Int!
+}
+
+input PaginationInput {
+  """Page number"""
+  pageNumber: Int
+
+  """Items per page"""
+  perPage: Int
+
+  """Field to sort by"""
+  sortBy: String
+
+  """Order: `ASC` or `DESC`"""
+  sortOrder: String
+}
+
 type Query {
   action(id: String!): Action!
-  actions: [Action!]!
+  actions(pagination: PaginationInput!): PaginatedActions!
   event(id: String!): Event!
-  events: [Event!]!
+  events(pagination: PaginationInput!): PaginatedEvents!
   source(id: String!): Source!
-  sources: [Source!]!
+  sources(pagination: PaginationInput!): PaginatedSources!
 }
 
 type Source {

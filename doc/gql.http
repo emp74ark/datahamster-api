@@ -1,20 +1,20 @@
 ### SOURCES
-# @no-log
 GRAPHQL {{graphql}}
 
 {
-    sources {
-        id,
-        title,
-        actions {
+    sources(pagination: {}) {
+        total,
+        results {
             id,
-            name,
-            events {
+            title,
+            description,
+            actions {
                 id,
-                localTime,
-                ip,
-                data,
-                createdAt
+                name,
+                events {
+                    id,
+                    ip
+                }
             }
         }
     }
@@ -23,7 +23,6 @@ GRAPHQL {{graphql}}
 ###
 
 ### SOURCE
-# @no-log
 GRAPHQL {{graphql}}
 
 {
@@ -36,20 +35,27 @@ GRAPHQL {{graphql}}
 ###
 
 ### ACTIONS
-# @no-log
 GRAPHQL {{graphql}}
 
 {
-    actions {
-        id,
-        name
+    actions(pagination: {pageNumber: 1, perPage: 2}) {
+        total,
+        results {
+            id,
+            name,
+            events {
+                id,
+                ip,
+                localTime,
+                createdAt
+            }
+        }
     }
 }
 
 ###
 
 ### ACTION
-# @no-log
 GRAPHQL {{graphql}}
 
 {
@@ -62,14 +68,30 @@ GRAPHQL {{graphql}}
 ###
 
 ### EVENTS
-# @no-log
 GRAPHQL {{graphql}}
 
 {
     events {
+        total,
+        results {
+            id,
+            ip,
+            localTime,
+            createdAt
+        }
+    }
+}
+
+###
+
+### EVENT
+GRAPHQL {{graphql}}
+
+{
+    event(id: "06eec06a-6012-42ff-914c-680048a228ac") {
         id,
-        localTime,
         ip,
+        localTime,
         createdAt
     }
 }
