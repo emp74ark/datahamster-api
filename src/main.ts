@@ -5,7 +5,7 @@ import * as session from 'express-session';
 import { Pool } from 'pg';
 import * as connectPgSimple from 'connect-pg-simple';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
-// import helmet from 'helmet';
+import helmet from 'helmet';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
@@ -68,7 +68,7 @@ async function bootstrap() {
     }),
   );
 
-  // app.use(helmet());
+  app.use(helmet());
 
   app.enableCors({
     origin: [configService.get<string>('WEB_CLIENT')],
