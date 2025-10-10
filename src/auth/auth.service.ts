@@ -22,6 +22,7 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: { username },
     });
+    console.debug('SERVICE_USER', user);
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
