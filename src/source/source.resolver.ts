@@ -7,6 +7,7 @@ import { SessionGuard } from '../auth/guards/session.guard';
 import { ActiveUser } from '../auth/decorators/active-user.decorator';
 import { User } from '../user/entities/user.entity';
 import { PaginationInput } from '../shared/pagination/pagination.input';
+import { UserRole } from '../user/entities/user.enums';
 
 @Resolver(() => Source)
 @SkipThrottle()
@@ -23,7 +24,7 @@ export class SourceResolver {
     console.log('pagination', pagination);
     return this.sourceService.findAll({
       userId: user.id,
-      role: user.role,
+      role: UserRole.USER, // show only sources of the user
       filter: {
         ...pagination,
       },

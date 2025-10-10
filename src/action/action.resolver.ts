@@ -8,6 +8,7 @@ import { SessionGuard } from '../auth/guards/session.guard';
 import { ActiveUser } from '../auth/decorators/active-user.decorator';
 import { User } from '../user/entities/user.entity';
 import { PaginationInput } from '../shared/pagination/pagination.input';
+import { UserRole } from '../user/entities/user.enums';
 
 @Resolver(() => Action)
 @SkipThrottle()
@@ -23,7 +24,7 @@ export class ActionResolver {
   ) {
     return this.actionService.findAll({
       userId: user.id,
-      role: user.role,
+      role: UserRole.USER, // show only actions of the user
       filter: {
         ...pagination,
       },

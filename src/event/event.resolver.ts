@@ -8,6 +8,7 @@ import { SessionGuard } from '../auth/guards/session.guard';
 import { ActiveUser } from '../auth/decorators/active-user.decorator';
 import { User } from '../user/entities/user.entity';
 import { PaginationInput } from '../shared/pagination/pagination.input';
+import { UserRole } from '../user/entities/user.enums';
 
 @Resolver(() => Event)
 @SkipThrottle()
@@ -23,7 +24,7 @@ export class EventResolver {
   ) {
     return this.eventService.findAll({
       userId: user.id,
-      role: user.role,
+      role: UserRole.USER, // show only events of the user
       filter: {
         ...pagination,
       },
