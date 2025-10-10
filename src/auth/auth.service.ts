@@ -29,8 +29,14 @@ export class AuthService {
         throw new UnauthorizedException('Invalid credentials');
       }
 
-      const pwdIsMatch = await argon.verify(user.password, password);
-      console.debug('SERVICE_PWD_IS_MATCH', pwdIsMatch);
+      let pwdIsMatch = false;
+      try {
+        console.debug('SERVICE_PWD_IS_MATCH_BEFORE', pwdIsMatch);
+        pwdIsMatch = await argon.verify(user.password, password);
+      } catch (error) {
+        console.error('PWD_ERROR', error);
+      }
+      console.debug('SERVICE_PWD_IS_MATCH_AFTER', pwdIsMatch);
 
       if (!pwdIsMatch) {
         throw new UnauthorizedException('Invalid credentials');
