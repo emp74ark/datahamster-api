@@ -29,7 +29,9 @@ async function bootstrap() {
     .addCookieAuth()
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, documentFactory);
+  SwaggerModule.setup('docs', app, documentFactory, {
+    jsonDocumentUrl: '/docs/json',
+  });
 
   const configService = app.get(ConfigService);
 
