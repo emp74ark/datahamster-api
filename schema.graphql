@@ -55,7 +55,7 @@ scalar JSONObject
 type Query {
   action(id: String!): Action!
   actions: [Action!]!
-  event: Event!
+  event(id: String!): Event!
   events: [Event!]!
   source(id: String!): Source!
   sources: [Source!]!

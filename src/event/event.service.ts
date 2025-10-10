@@ -27,26 +27,22 @@ export class EventService extends PaginationService {
   findAll({
     userId,
     role,
+    actionId,
     filter,
   }: {
     userId: string;
     role: UserRole;
+    actionId?: string;
     filter: PaginationParams & { actionId?: string };
   }) {
     const where: FindOptionsWhere<Event> =
       role === UserRole.USER
         ? { user: { id: userId }, action: { id: filter.actionId } }
         : { action: { id: filter.actionId } };
-    return this.paginateResults(this.eventRepository, where, filter);
-  }
-
-  find({ actionId }: { actionId?: string }) {
     if (actionId) {
-      return this.eventRepository.find({
-        where: { action: { id: actionId } },
-      });
+      where.action = { id: actionId };
     }
-    return this.eventRepository.find();
+    return this.paginateResults(this.eventRepository, where, filter);
   }
 
   async findOne({
@@ -67,10 +63,6 @@ export class EventService extends PaginationService {
       throw new NotFoundException('Event not found');
     }
     return event;
-  }
-
-  one({ id }: { id: string }) {
-    return this.eventRepository.findOne({ where: { id } });
   }
 
   async update({

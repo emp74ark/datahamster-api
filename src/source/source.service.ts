@@ -37,10 +37,6 @@ export class SourceService extends PaginationService {
     return this.paginateResults(this.sourceRepository, where, filter);
   }
 
-  find() {
-    return this.sourceRepository.find();
-  }
-
   async findOne({
     id,
     userId,
@@ -59,10 +55,6 @@ export class SourceService extends PaginationService {
       throw new NotFoundException('Source not found');
     }
     return source;
-  }
-
-  one(id: string) {
-    return this.sourceRepository.findOne({ where: { id } });
   }
 
   async update({
