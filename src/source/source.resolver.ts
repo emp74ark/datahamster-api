@@ -21,7 +21,6 @@ export class SourceResolver {
     pagination: PaginationInput,
     @ActiveUser() user: User,
   ) {
-    console.log('pagination', pagination);
     return this.sourceService.findAll({
       userId: user.id,
       role: UserRole.USER, // show only sources of the user
