@@ -1,0 +1,99 @@
+### SOURCES
+GRAPHQL {{graphql}}
+
+{
+    sources(pagination: {}) {
+        total,
+        results {
+            id,
+            title,
+            description,
+            actions {
+                id,
+                name,
+                events {
+                    id,
+                    ip
+                }
+            }
+        }
+    }
+}
+
+###
+
+### SOURCE
+GRAPHQL {{graphql}}
+
+{
+    source(id: "dfd5b1a0-8b90-4543-bace-b8fe02eb88a2") {
+        id,
+        title
+    }
+}
+
+###
+
+### ACTIONS
+GRAPHQL {{graphql}}
+
+{
+    actions(pagination: {pageNumber: 1, perPage: 2}) {
+        total,
+        results {
+            id,
+            name,
+            events {
+                id,
+                ip,
+                localTime,
+                createdAt
+            }
+        }
+    }
+}
+
+###
+
+### ACTION
+GRAPHQL {{graphql}}
+
+{
+    action(id: "4d4f030a-f60a-4bf9-aa47-9229c0e95622") {
+        id,
+        name
+    }
+}
+
+###
+
+### EVENTS
+GRAPHQL {{graphql}}
+
+{
+    events {
+        total,
+        results {
+            id,
+            ip,
+            localTime,
+            createdAt
+        }
+    }
+}
+
+###
+
+### EVENT
+GRAPHQL {{graphql}}
+
+{
+    event(id: "06eec06a-6012-42ff-914c-680048a228ac") {
+        id,
+        ip,
+        localTime,
+        createdAt
+    }
+}
+
+###
