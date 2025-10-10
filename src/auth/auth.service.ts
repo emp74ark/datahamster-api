@@ -19,30 +19,37 @@ export class AuthService {
   ) {}
 
   async login({ dto: { username, password } }: { dto: AuthLoginDto }) {
-    const user = await this.userRepository.findOne({
-      where: { username },
-    });
-    console.debug('SERVICE_USER', user);
+    try {
+      const user = await this.userRepository.findOne({
+        where: { username },
+      });
+      console.debug('SERVICE_USER', user);
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      if (!user) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
+
+      const pwdIsMatch = await argon.verify(user.password, password);
+      console.debug('SERVICE_PWD_IS_MATCH', pwdIsMatch);
+
+      if (!pwdIsMatch) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
+
+      console.debug('SERVICE_UPDATE_LAST_LOGIN', user);
+      const result = await this.userRepository.update(user.id, {
+        lastLogin: new Date(),
+      });
+      console.debug('SERVICE_UPDATE_LAST_LOGIN_RESULT', result);
+
+      return this.userRepository.findOne({
+        where: { username },
+        select: userPublicFields,
+      });
+    } catch (error) {
+      console.error('SERVICE_ERROR', error);
+      throw error;
     }
-
-    const pwdIsMatch = await argon.verify(user.password, password);
-    console.debug('SERVICE_PWD_IS_MATCH', pwdIsMatch);
-
-    if (!pwdIsMatch) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-
-    console.debug('SERVICE_UPDATE_LAST_LOGIN', user);
-    const result = await this.userRepository.update(user.id, { lastLogin: new Date() });
-    console.debug('SERVICE_UPDATE_LAST_LOGIN_RESULT', result);
-
-    return this.userRepository.findOne({
-      where: { username },
-      select: userPublicFields,
-    });
   }
 
   async signup({ dto }: { dto: AuthSignupDto }) {
