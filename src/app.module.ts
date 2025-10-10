@@ -19,6 +19,8 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLJSONObject } from 'graphql-type-json';
 
+const isDev = process.env.NODE_ENV === 'dev';
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -46,10 +48,18 @@ import { GraphQLJSONObject } from 'graphql-type-json';
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: 'schema.graphql',
+      autoSchemaFile: isDev ? 'schema.graphql' : true,
       playground: false,
       sortSchema: true,
       resolvers: { JSONObject: GraphQLJSONObject },
+      formatError: (error) => {
+        return isDev
+          ? error
+          : {
+              message: error.message,
+              path: error.path,
+            };
+      },
     }),
     UserModule,
     SharedModule,
