@@ -1,19 +1,27 @@
+### HEALTH
+
+GRAPHQL {{graphql}}
+
+{
+    health
+}
+
+###
+
 ### SOURCES
 GRAPHQL {{graphql}}
 
 {
-    sources(pagination: {}) {
+    sources(pagination: {pageNumber: 1, perPage: 1}) {
         total,
         results {
             id,
-            title,
-            description,
             actions {
-                id,
                 name,
                 events {
-                    id,
-                    ip
+                    ip,
+                    localTime,
+                    data
                 }
             }
         }
@@ -59,9 +67,10 @@ GRAPHQL {{graphql}}
 GRAPHQL {{graphql}}
 
 {
-    action(id: "4d4f030a-f60a-4bf9-aa47-9229c0e95622") {
+    action(id: "20e742ed-dabd-420a-943d-93820c4fedaf") {
         id,
-        name
+        name,
+        publicId
     }
 }
 

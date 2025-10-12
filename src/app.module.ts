@@ -18,6 +18,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLJSONObject } from 'graphql-type-json';
+import { AppResolver } from './app.resolver';
 
 const isDev = process.env.NODE_ENV === 'dev';
 
@@ -76,6 +77,7 @@ const isDev = process.env.NODE_ENV === 'dev';
       provide: 'APP_GUARD',
       useClass: ThrottlerGuard,
     },
+    AppResolver,
   ],
 })
 export class AppModule {}

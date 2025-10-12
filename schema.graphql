@@ -86,6 +86,7 @@ type Query {
   actions(pagination: PaginationInput!): PaginatedActions!
   event(id: String!): Event!
   events(pagination: PaginationInput!): PaginatedEvents!
+  health: String!
   source(id: String!): Source!
   sources(pagination: PaginationInput!): PaginatedSources!
 }
