@@ -83,7 +83,7 @@ input PaginationInput {
 
 type Query {
   action(id: String!): Action!
-  actions(pagination: PaginationInput!): PaginatedActions!
+  actions(pagination: PaginationInput!, sourceId: String): PaginatedActions!
   event(id: String!): Event!
   events(actionId: String, pagination: PaginationInput!): PaginatedEvents!
   health: String!

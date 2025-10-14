@@ -18,6 +18,7 @@ export class ActionResolver {
 
   @Query(() => PaginatedActions)
   async actions(
+    @Args('sourceId', { nullable: true }) sourceId: string,
     @Args('pagination')
     pagination: PaginationInput,
     @ActiveUser() user: User,
@@ -25,6 +26,7 @@ export class ActionResolver {
     return this.actionService.findAll({
       userId: user.id,
       role: UserRole.USER, // show only actions of the user
+      sourceId,
       filter: {
         ...pagination,
       },
