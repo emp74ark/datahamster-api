@@ -54,3 +54,9 @@ export class Source {
 
 @ObjectType()
 export class PaginatedSources extends PaginatedResults(Source) {}
+
+@ObjectType()
+export class DeleteSourceResponse {
+  @Field(() => String, { description: 'Message' })
+  message: string;
+}

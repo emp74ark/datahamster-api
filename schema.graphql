@@ -24,10 +24,26 @@ type Action {
   updatedAt: DateTime!
 }
 
+input ChangeSourceDto {
+  description: String
+  id: String!
+  title: String
+}
+
+input CreateSourceDto {
+  description: String
+  title: String!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+type DeleteSourceResponse {
+  """Message"""
+  message: String!
+}
 
 type Event {
   """Event creation date"""
@@ -51,6 +67,12 @@ type Event {
 The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
 scalar JSONObject
+
+type Mutation {
+  createSource(dto: CreateSourceDto!): Source!
+  deleteSource(id: String!): DeleteSourceResponse!
+  updateSource(dto: ChangeSourceDto!): Source!
+}
 
 type PaginatedActions {
   results: [Action!]

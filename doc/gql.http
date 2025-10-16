@@ -12,18 +12,11 @@ GRAPHQL {{graphql}}
 GRAPHQL {{graphql}}
 
 {
-    sources(pagination: {pageNumber: 1, perPage: 1}) {
+    sources(pagination: {}) {
         total,
         results {
             id,
-            actions {
-                name,
-                events {
-                    ip,
-                    localTime,
-                    data
-                }
-            }
+            title
         }
     }
 }
@@ -34,9 +27,50 @@ GRAPHQL {{graphql}}
 GRAPHQL {{graphql}}
 
 {
-    source(id: "dfd5b1a0-8b90-4543-bace-b8fe02eb88a2") {
+    source(id: "2fb86a94-9169-491a-88d5-25163838c3e3") {
+        id,
+        title,
+        actions {
+            id,
+            name,
+            publicId
+        }
+    }
+}
+
+###
+
+### CREATE SOURCE
+GRAPHQL  {{graphql}}
+
+mutation {
+    createSource(dto: {title: "My new source", description: "My new description"}) {
+        id,
+        title,
+        description
+    }
+}
+
+###
+
+### UPDATE SOURCE
+GRAPHQL  {{graphql}}
+
+mutation {
+    updateSource(dto: {id: "2fb86a94-9169-491a-88d5-25163838c3e3", title: "My updated source"}) {
         id,
         title
+    }
+}
+
+###
+
+### DELETE SOURCE
+GRAPHQL  {{graphql}}
+
+mutation {
+    deleteSource(id: "3551bba8-4923-41e3-9d86-8fb83652263a") {
+        message
     }
 }
 
@@ -67,7 +101,7 @@ GRAPHQL {{graphql}}
 GRAPHQL {{graphql}}
 
 {
-    action(id: "20e742ed-dabd-420a-943d-93820c4fedaf") {
+    action(id: "9373f240-8c0c-498a-bb1a-74fbf61b64cd") {
         id,
         name,
         publicId
@@ -80,7 +114,7 @@ GRAPHQL {{graphql}}
 GRAPHQL {{graphql}}
 
 {
-    events {
+    events(actionId: "9373f240-8c0c-498a-bb1a-74fbf61b64cd", pagination: {}) {
         total,
         results {
             id,
@@ -97,7 +131,7 @@ GRAPHQL {{graphql}}
 GRAPHQL {{graphql}}
 
 {
-    event(id: "06eec06a-6012-42ff-914c-680048a228ac") {
+    event(id: "978023e5-1d10-4ff5-8939-1d63812221d6") {
         id,
         ip,
         localTime,
