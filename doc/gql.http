@@ -101,10 +101,47 @@ GRAPHQL {{graphql}}
 GRAPHQL {{graphql}}
 
 {
-    action(id: "9373f240-8c0c-498a-bb1a-74fbf61b64cd") {
+    action(id: "8a09831c-5129-4702-8ce7-bdceb92ffb7a") {
         id,
         name,
         publicId
+    }
+}
+
+###
+
+### CREATE ACTION
+GRAPHQL  {{graphql}}
+
+mutation {
+    createAction(dto: {name: "My new action", sourceId: "2fb86a94-9169-491a-88d5-25163838c3e3"}) {
+        id,
+        name
+    }
+}
+
+###
+
+### UPDATE ACTION
+
+GRAPHQL  {{graphql}}
+
+mutation {
+    updateAction(dto: {id: "8a09831c-5129-4702-8ce7-bdceb92ffb7a", name: "My updated action"}) {
+        id,
+        name
+    }
+}
+
+###
+
+### DELETE ACTION
+
+GRAPHQL  {{graphql}}
+
+mutation {
+    deleteAction(id: "8a09831c-5129-4702-8ce7-bdceb92ffb7a") {
+        message
     }
 }
 
