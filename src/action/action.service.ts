@@ -27,14 +27,19 @@ export class ActionService extends PaginationService {
   findAll({
     userId,
     role,
+    sourceId,
     filter,
   }: {
     userId: string;
     role: UserRole;
+    sourceId?: string;
     filter: PaginationParams;
   }) {
     const where: FindOptionsWhere<Action> =
       role === UserRole.USER ? { user: { id: userId } } : {};
+    if (sourceId) {
+      where.source = { id: sourceId };
+    }
     return this.paginateResults(this.actionRepository, where, filter);
   }
 

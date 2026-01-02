@@ -1,5 +1,5 @@
-@actionId = 69099440-dccd-407f-a397-c6b037efbf01
-@publicId = 319c52bf-c3e0-4549-bc78-d4640d428d03
+@actionId = 4d4f030a-f60a-4bf9-aa47-9229c0e95622
+@publicId = 4bbc7af5-ab60-48a6-b713-eba3b6e77cfd
 @eventId = 908d82b0-bedd-4b04-8172-5200396cd92d
 
 ### CREATE EVENT
@@ -42,7 +42,10 @@ Content-Type: application/json
 
 {
   "ip": "192.168.1.10",
-  "data": { "page": "/dashboard", "clicked": false }
+  "data": {
+    "page": "/dashboard",
+    "clicked": false
+  }
 }
 
 ###
@@ -55,14 +58,24 @@ Content-Type: application/json
 ###
 
 ### PUBLIC EVENT
+< {%
+  const event = Date.now().toString(36);
+  request.variables.set('event', event);
+  const clicked = Boolean(Math.floor(Math.random() * 10));
+  request.variables.set('clicked', clicked);
+  const ip = `127.0.0.${Math.floor(Math.random() * 255)}`;
+  request.variables.set('ip', ip);
+  const localTime = new Date().toISOString();
+  request.variables.set('localTime', localTime);
+%}
 POST {{backend}}/public
 Content-Type: application/json
 
 {
   "id": "{{publicId}}",
-  "data": { "page": "/home", "clicked": true },
-  "ip": "127.0.0.1",
-  "localTime": "2025-09-12T08:28:09.163Z"
+  "data": { "userEvent": "{{event}}", "clicked": {{clicked}} },
+  "ip": "{{ip}}",
+  "localTime": "{{localTime}}"
 }
 
 ###

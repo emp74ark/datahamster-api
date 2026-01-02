@@ -1,8 +1,8 @@
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
-  BadRequestException,
 } from '@nestjs/common';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { AuthSignupDto } from './dto/auth-signup.dto';
@@ -33,7 +33,9 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    await this.userRepository.update(user.id, { lastLogin: new Date() });
+    await this.userRepository.update(user.id, {
+      lastLogin: new Date(),
+    });
 
     return this.userRepository.findOne({
       where: { username },

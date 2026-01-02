@@ -1,5 +1,5 @@
 import { FindManyOptions, FindOptionsWhere, Repository } from 'typeorm';
-import { Paginated, PaginationParams } from './paginataion.types';
+import { Paginated, PaginationParams, SortOrder } from './paginataion.types';
 
 export class PaginationService {
   protected async paginateResults<T extends object>(
@@ -7,10 +7,11 @@ export class PaginationService {
     where: FindOptionsWhere<T>,
     filter: PaginationParams,
   ): Promise<Paginated<T>> {
-    const skip = filter.pageNumber * filter.perPage - filter.perPage;
-    const take = filter.perPage;
-    const sortBy = filter.sortBy;
-    const sortOrder = filter.sortOrder;
+    const take = filter.perPage || 20;
+    const pageNumber = filter.pageNumber || 1;
+    const skip = pageNumber * take - take;
+    const sortBy = filter.sortBy || 'createdAt';
+    const sortOrder = filter.sortOrder || SortOrder.DESC;
     const order: FindManyOptions<T>['order'] = {};
     if (sortBy && sortOrder) {
       order[sortBy] = sortOrder;

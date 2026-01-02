@@ -1,0 +1,179 @@
+### HEALTH
+
+GRAPHQL {{graphql}}
+
+{
+    health
+}
+
+###
+
+### SOURCES
+GRAPHQL {{graphql}}
+
+{
+    sources(pagination: {}) {
+        total,
+        results {
+            id,
+            title
+        }
+    }
+}
+
+###
+
+### SOURCE
+GRAPHQL {{graphql}}
+
+{
+    source(id: "2fb86a94-9169-491a-88d5-25163838c3e3") {
+        id,
+        title,
+        actions {
+            id,
+            name,
+            publicId
+        }
+    }
+}
+
+###
+
+### CREATE SOURCE
+GRAPHQL  {{graphql}}
+
+mutation {
+    createSource(dto: {title: "My new source", description: "My new description"}) {
+        id,
+        title,
+        description
+    }
+}
+
+###
+
+### UPDATE SOURCE
+GRAPHQL  {{graphql}}
+
+mutation {
+    updateSource(dto: {id: "2fb86a94-9169-491a-88d5-25163838c3e3", title: "My updated source"}) {
+        id,
+        title
+    }
+}
+
+###
+
+### DELETE SOURCE
+GRAPHQL  {{graphql}}
+
+mutation {
+    deleteSource(id: "3551bba8-4923-41e3-9d86-8fb83652263a") {
+        message
+    }
+}
+
+###
+
+### ACTIONS
+GRAPHQL {{graphql}}
+
+{
+    actions(pagination: {pageNumber: 1, perPage: 2}) {
+        total,
+        results {
+            id,
+            name,
+            events {
+                id,
+                ip,
+                localTime,
+                createdAt
+            }
+        }
+    }
+}
+
+###
+
+### ACTION
+GRAPHQL {{graphql}}
+
+{
+    action(id: "8a09831c-5129-4702-8ce7-bdceb92ffb7a") {
+        id,
+        name,
+        publicId
+    }
+}
+
+###
+
+### CREATE ACTION
+GRAPHQL  {{graphql}}
+
+mutation {
+    createAction(dto: {name: "My new action", sourceId: "2fb86a94-9169-491a-88d5-25163838c3e3"}) {
+        id,
+        name
+    }
+}
+
+###
+
+### UPDATE ACTION
+
+GRAPHQL  {{graphql}}
+
+mutation {
+    updateAction(dto: {id: "8a09831c-5129-4702-8ce7-bdceb92ffb7a", name: "My updated action"}) {
+        id,
+        name
+    }
+}
+
+###
+
+### DELETE ACTION
+
+GRAPHQL  {{graphql}}
+
+mutation {
+    deleteAction(id: "8a09831c-5129-4702-8ce7-bdceb92ffb7a") {
+        message
+    }
+}
+
+###
+
+### EVENTS
+GRAPHQL {{graphql}}
+
+{
+    events(actionId: "9373f240-8c0c-498a-bb1a-74fbf61b64cd", pagination: {}) {
+        total,
+        results {
+            id,
+            ip,
+            localTime,
+            createdAt
+        }
+    }
+}
+
+###
+
+### EVENT
+GRAPHQL {{graphql}}
+
+{
+    event(id: "978023e5-1d10-4ff5-8939-1d63812221d6") {
+        id,
+        ip,
+        localTime,
+        createdAt
+    }
+}
+
+###

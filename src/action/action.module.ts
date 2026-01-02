@@ -3,10 +3,11 @@ import { ActionService } from './action.service';
 import { ActionController } from './action.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Action } from './entities/action.entity';
+import { ActionResolver } from './action.resolver';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Action])],
   controllers: [ActionController],
-  providers: [ActionService],
+  providers: [ActionService, ActionResolver],
 })
 export class ActionModule {}

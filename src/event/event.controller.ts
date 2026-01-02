@@ -17,12 +17,15 @@ import { SessionGuard } from '../auth/guards/session.guard';
 import { AuthSession } from '../auth/auth.types';
 import { Pagination } from '../shared/pagination/pagination.decorator';
 import { PaginationParams } from '../shared/pagination/paginataion.types';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Events')
 @UseGuards(SessionGuard)
 @Controller('event')
 export class EventController {
   constructor(private readonly eventService: EventService) {}
 
+  @ApiOperation({ summary: 'Create an event' })
   @Post()
   create(
     @Body() dto: CreateEventDto,
@@ -31,6 +34,7 @@ export class EventController {
     return this.eventService.create({ userId, dto });
   }
 
+  @ApiOperation({ summary: 'Get all events' })
   @Get()
   findAll(
     @Session() { user: { id: userId, role } }: AuthSession,
@@ -44,6 +48,7 @@ export class EventController {
     });
   }
 
+  @ApiOperation({ summary: 'Get an event by id' })
   @Get(':id')
   findOne(
     @Param('id') id: string,
@@ -52,6 +57,7 @@ export class EventController {
     return this.eventService.findOne({ id, userId, role });
   }
 
+  @ApiOperation({ summary: 'Update an event' })
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -61,6 +67,7 @@ export class EventController {
     return this.eventService.update({ id, userId, role, dto });
   }
 
+  @ApiOperation({ summary: 'Delete an event' })
   @Delete(':id')
   remove(
     @Param('id') id: string,

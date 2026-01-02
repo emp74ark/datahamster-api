@@ -27,16 +27,21 @@ export class EventService extends PaginationService {
   findAll({
     userId,
     role,
+    actionId,
     filter,
   }: {
     userId: string;
     role: UserRole;
+    actionId?: string;
     filter: PaginationParams & { actionId?: string };
   }) {
     const where: FindOptionsWhere<Event> =
       role === UserRole.USER
         ? { user: { id: userId }, action: { id: filter.actionId } }
         : { action: { id: filter.actionId } };
+    if (actionId) {
+      where.action = { id: actionId };
+    }
     return this.paginateResults(this.eventRepository, where, filter);
   }
 
