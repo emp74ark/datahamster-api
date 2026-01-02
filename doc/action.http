@@ -1,4 +1,4 @@
-@sourceId = dfd5b1a0-8b90-4543-bace-b8fe02eb88a2
+@sourceId = 9d80ca1b-b428-4ead-8b00-4125207e8966
 @actionId = e74ab282-6130-4edb-ac7b-fbaf24f48939
 
 ### CREATE ACTION
@@ -7,7 +7,7 @@ POST {{backend}}/action
 Content-Type: application/json
 
 {
-  "name": "test1",
+  "name": "test2",
   "sourceId": "{{sourceId}}"
 }
 

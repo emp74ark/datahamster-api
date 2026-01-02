@@ -18,6 +18,7 @@ export class EventResolver {
   constructor(private readonly eventService: EventService) {}
   @Query(() => PaginatedEvents)
   async events(
+    @Args('actionId', { nullable: true }) actionId: string,
     @Args('pagination')
     pagination: PaginationInput,
     @ActiveUser() user: User,
@@ -27,6 +28,7 @@ export class EventResolver {
       role: UserRole.USER, // show only events of the user
       filter: {
         ...pagination,
+        actionId,
       },
     });
   }

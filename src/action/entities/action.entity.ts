@@ -61,3 +61,9 @@ export class Action {
 
 @ObjectType()
 export class PaginatedActions extends PaginatedResults(Action) {}
+
+@ObjectType()
+export class DeleteActionResponse {
+  @Field(() => String, { description: 'Message' })
+  message: string;
+}
